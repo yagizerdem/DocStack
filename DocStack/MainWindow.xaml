@@ -186,9 +186,8 @@
             </StackPanel>
 
             <!-- Main Content Display -->
-            <StackPanel Orientation="Vertical" Background="{StaticResource MatteBlackBrush}" Grid.Column="1">
-                <ContentControl Content="{Binding CurrentViewModel}"/>
-            </StackPanel>
+            <ContentControl Content="{Binding CurrentViewModel}" Grid.Column="1"/>
+            
         </Grid>
     </Grid>
 </Window>

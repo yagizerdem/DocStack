@@ -2,6 +2,7 @@
 using DocStack.Utils;
 using Microsoft.Extensions.DependencyInjection;
 using Models.ApiResponse;
+using Models.Entity;
 using Service;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,8 @@ using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Reflection.Emit;
+using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -51,9 +54,27 @@ namespace DocStack.ViewModels
         }
         public bool IsNotLoading => !IsLoading;
 
-        private ObservableCollection<Work> _worksList;
 
-        public ObservableCollection<Work> WorksList
+        private bool _isListView;
+        public bool IsListView
+        {
+            get => _isListView;
+            set
+            {
+                if (_isListView != value)
+                {
+                    _isListView = value;
+                    OnPropertyChanged(nameof(IsListView));
+                    OnPropertyChanged(nameof(IsGridView));
+                }
+            }
+        }
+        public bool IsGridView => !IsListView;
+
+
+        private ObservableCollection<WorkEntity> _worksList;
+
+        public ObservableCollection<WorkEntity> WorksList
         {
             get => _worksList;
             set
@@ -66,50 +87,102 @@ namespace DocStack.ViewModels
         private NetworkService _networkService;
         public ICommand SearchCommand { get; set; }
 
+        public ICommand LoadMoreDocumentCommand { get; set; }
+
+        public ICommand ClearDocumentsCommand { get; set; }
+
+        private int _pageIndex = 0;
+
+        private int _limit = 10;
+
+        private Dictionary<WorkEntity, Work> _keyValuePairs;
+
+        private WorkEntity _selectedWorkEntity;
+
+        public WorkEntity SelectedWorkEntity
+        {
+            get => _selectedWorkEntity;
+            set {
+                _selectedWorkEntity = value;
+                OnPropertyChanged(nameof(SelectedWorkEntity));
+                OnSelectedWorkEntityChanged(); 
+            }
+        }
+
         public SearchViewModel()
         {
             SearchCommand = new RelayCommand<string>((_)=>SearchDocument());
+            LoadMoreDocumentCommand = new RelayCommand<string>((_) => LoadMoreDocument());
+            ClearDocumentsCommand = new RelayCommand<string>((_) => ClearDocuments());
 
             _networkService = App.ServiceProvider.GetRequiredService<NetworkService>();
 
             IsLoading = false;
             WorksList = new();
-
-            for (int i = 0; i <10; i++)
-            {
-                WorksList.Add(new Work()
-                {
-                    @abstract = "good paper"
-                });
-            }
-
+            _keyValuePairs = new();
+            IsListView = true;
         }
 
         private async Task SearchDocument()
         {
-            if (String.IsNullOrEmpty(Query)) return;
+            ClearDocuments();
+            await FetchDocuments();
+        }
 
+        private async Task LoadMoreDocument() {
+            if(_pageIndex == 0)
+            {
+                Toaster.ShowWarning("search documents before loading more");
+                return;
+            }
+            await FetchDocuments();
+        }
+
+        private async Task FetchDocuments()
+        {
+            if(string.IsNullOrWhiteSpace(Query))
+            {
+                Toaster.ShowWarning($"Enter keywords to search documents");
+                return;
+            }
             try
             {
                 IsLoading = true;
                 string q = String.Join('+', Query.Split(" "));
-                var response = await _networkService.GetWorks(q);
+                int offset = _pageIndex * _limit;
+                var response = await _networkService.GetWorks(q, offset, _limit);
 
                 SearchWorksResponse? data = response.Data;
 
                 if (data == null)
                 {
-                    Toaster.ShowWarning("No data found. Please check your input or try again.");
+                    Toaster.ShowWarning($"No data found for input : {Query}. Please check your input or try again.");
                     return;
                 }
 
-                data.results.ToList().ForEach(work => { 
-                    WorksList.Add(work);
-                });
-                
+                data.results.ToList().ForEach(work =>
+                {
+                    WorkEntity workEntity = new()
+                    {
+                        Abstract = work.@abstract,
+                        Authors = String.Join(" ", work.authors.ToList().Select(x => x.name)),
+                        DOI = work.@doi,
+                        Year = work.yearPublished.ToString(),
+                        FullTextLink = work.downloadUrl,
+                        Title = work.title,
+                        Publisher = work.publisher,
+                    };
 
-                if (response.Ok) 
+                    WorksList.Add(workEntity);
+                    _keyValuePairs.Add(workEntity, work);
+                });
+
+
+                if (response.Ok)
+                {
                     Toaster.ShowSuccess(response.Message);
+                    _pageIndex++;
+                }
                 else
                     Toaster.ShowError(response.Message);
             }
@@ -117,8 +190,26 @@ namespace DocStack.ViewModels
             finally
             {
                 IsLoading = false;
-            }     
+            }
+        }
+    
+        private void ClearDocuments()
+        {
+            WorksList.Clear();
+            _keyValuePairs.Clear();
+            _pageIndex = 0;
         }
 
+        private void OnSelectedWorkEntityChanged()
+        {
+            if (SelectedWorkEntity != null)
+            {
+                Work workModel =  _keyValuePairs[SelectedWorkEntity];
+                ;
+            }
+        }
+
+        public async void HitSearchKey() => await SearchDocument();
+        
     }
 }

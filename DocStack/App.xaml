@@ -10,8 +10,8 @@
                 <ResourceDictionary Source="Resources/ProgressBar.xaml"/>
                 <ResourceDictionary Source="Resources/Buttons.xaml"/>
                 <ResourceDictionary Source="Resources/TextBox.xaml"/>
-                <ResourceDictionary Source="pack://application:,,,/ToastNotifications.Messages;component/Themes/Default.xaml" />
-
+                <ResourceDictionary Source="Resources/ScrollBar.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/ToastNotifications.Messages;component/Themes/Default.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

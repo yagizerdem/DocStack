@@ -82,5 +82,135 @@
         </Setter>
     </Style>
 
+    <Style x:Key="ModernButton2" TargetType="Button">
+        <Setter Property="Background" Value="#008CBA"/>
+        <!-- Slightly different shade of blue -->
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="Padding" Value="14,7"/>
+        <!-- Slightly larger padding -->
+        <Setter Property="FontSize" Value="15"/>
+        <!-- Slightly larger font size -->
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="SnapsToDevicePixels" Value="True"/>
+        <Setter Property="Effect">
+            <Setter.Value>
+                <DropShadowEffect Color="Gray" BlurRadius="8" ShadowDepth="2"/>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border Background="{TemplateBinding Background}"
+                        CornerRadius="8">
+
+                        <Border.RenderTransform>
+                            <ScaleTransform ScaleX="1" ScaleY="1"/>
+                        </Border.RenderTransform>
+
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+
+                    <ControlTemplate.Triggers>
+
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="#0072A3"/>
+                            <Setter Property="Effect">
+                                <Setter.Value>
+                                    <DropShadowEffect Color="Black" BlurRadius="12" ShadowDepth="3"/>
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter Property="Background" Value="#00688F"/>
+                            <Setter Property="Effect">
+                                <Setter.Value>
+                                    <DropShadowEffect Color="Black" BlurRadius="6" ShadowDepth="1"/>
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Background" Value="Gray"/>
+                            <Setter Property="Foreground" Value="#BFBFBF"/>
+                            <Setter Property="Effect" Value="{x:Null}"/>
+                            <Setter Property="Opacity" Value="0.5"/>
+                        </Trigger>
+
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="ModernButton3" TargetType="Button">
+        <Setter Property="Background" Value="#D32F2F"/>
+        <!-- Red background -->
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="Padding" Value="14,7"/>
+        <!-- Slightly larger padding -->
+        <Setter Property="FontSize" Value="15"/>
+        <!-- Slightly larger font -->
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="SnapsToDevicePixels" Value="True"/>
+        <Setter Property="Effect">
+            <Setter.Value>
+                <DropShadowEffect Color="Black" BlurRadius="6" ShadowDepth="2"/>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border Background="{TemplateBinding Background}"
+                        CornerRadius="8" >
+
+                        <!-- Pressed Animation -->
+                        <Border.RenderTransform>
+                            <ScaleTransform ScaleX="1" ScaleY="1"/>
+                        </Border.RenderTransform>
+
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+
+                    <ControlTemplate.Triggers>
+
+                        <!-- Hover Effect (Slightly Darker Red) -->
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="#B71C1C"/>
+                            <!-- Darker red on hover -->
+                            <Setter Property="Effect">
+                                <Setter.Value>
+                                    <DropShadowEffect Color="Black" BlurRadius="12" ShadowDepth="3"/>
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+
+                        <!-- Pressed Effect (Even Darker Red) -->
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter Property="Background" Value="#A31616"/>
+                            <Setter Property="Effect">
+                                <Setter.Value>
+                                    <DropShadowEffect Color="Black" BlurRadius="5" ShadowDepth="1"/>
+                                </Setter.Value>
+                            </Setter>
+                  
+                        </Trigger>
+
+                        <!-- Disabled Effect -->
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Background" Value="Gray"/>
+                            <Setter Property="Foreground" Value="#BFBFBF"/>
+                            <Setter Property="Effect" Value="{x:Null}"/>
+                            <Setter Property="Opacity" Value="0.5"/>
+                        </Trigger>
+
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
 
 </ResourceDictionary>

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DocStack.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,6 +24,17 @@ namespace DocStack.Views
         public SearchView()
         {
             InitializeComponent();
+        }
+
+        private void TextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if(e.Key == Key.Enter)
+            {
+                if (DataContext is SearchViewModel viewModel)
+                {
+                    viewModel.HitSearchKey();
+                }
+            }
         }
     }
 }
