@@ -1,0 +1,95 @@
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- Color Definitions -->
+    <Color x:Key="Black">#000000</Color>
+    <Color x:Key="Charcoal">#36454F</Color>
+    <Color x:Key="DarkGreen">#023020</Color>
+    <Color x:Key="DarkPurple">#301934</Color>
+    <Color x:Key="JetBlack">#343434</Color>
+    <Color x:Key="Licorice">#1B1212</Color>
+    <Color x:Key="MatteBlack">#28282B</Color>
+    <Color x:Key="Onyx">#353935</Color>
+
+    <Color x:Key="Aqua">#00FFFF</Color>
+    <Color x:Key="Azure">#F0FFFF</Color>
+    <Color x:Key="BabyBlue">#89CFF0</Color>
+    <Color x:Key="Blue">#0000FF</Color>
+    <Color x:Key="BlueGray">#7393B3</Color>
+    <Color x:Key="BlueGreen">#088F8F</Color>
+    <Color x:Key="BrightBlue">#0096FF</Color>
+    <Color x:Key="CadetBlue">#5F9EA0</Color>
+    <Color x:Key="CobaltBlue">#0047AB</Color>
+    <Color x:Key="CornflowerBlue">#6495ED</Color>
+    <Color x:Key="Cyan">#00FFFF</Color>
+    <Color x:Key="DarkBlue">#00008B</Color>
+    <Color x:Key="Denim">#6F8FAF</Color>
+    <Color x:Key="EgyptianBlue">#1434A4</Color>
+    <Color x:Key="ElectricBlue">#7DF9FF</Color>
+    <Color x:Key="Glaucous">#6082B6</Color>
+    <Color x:Key="Indigo">#3F00FF</Color>
+    <Color x:Key="Iris">#5D3FD3</Color>
+    <Color x:Key="LightBlue">#ADD8E6</Color>
+    <Color x:Key="MidnightBlue">#191970</Color>
+    <Color x:Key="NavyBlue">#000080</Color>
+    <Color x:Key="NeonBlue">#1F51FF</Color>
+    <Color x:Key="PastelBlue">#A7C7E7</Color>
+    <Color x:Key="Periwinkle">#CCCCFF</Color>
+    <Color x:Key="PowderBlue">#B6D0E2</Color>
+    <Color x:Key="RobinEggBlue">#96DED1</Color>
+    <Color x:Key="RoyalBlue">#4169E1</Color>
+    <Color x:Key="SapphireBlue">#0F52BA</Color>
+    <Color x:Key="SkyBlue">#87CEEB</Color>
+    <Color x:Key="SteelBlue">#4682B4</Color>
+    <Color x:Key="Teal">#008080</Color>
+    <Color x:Key="Turquoise">#40E0D0</Color>
+    <Color x:Key="Ultramarine">#0437F2</Color>
+    <Color x:Key="Zaffre">#0818A8</Color>
+
+    <!-- Brush Definitions -->
+    <SolidColorBrush x:Key="BlackBrush" Color="{StaticResource Black}"/>
+    <SolidColorBrush x:Key="CharcoalBrush" Color="{StaticResource Charcoal}"/>
+    <SolidColorBrush x:Key="DarkGreenBrush" Color="{StaticResource DarkGreen}"/>
+    <SolidColorBrush x:Key="DarkPurpleBrush" Color="{StaticResource DarkPurple}"/>
+    <SolidColorBrush x:Key="JetBlackBrush" Color="{StaticResource JetBlack}"/>
+    <SolidColorBrush x:Key="LicoriceBrush" Color="{StaticResource Licorice}"/>
+    <SolidColorBrush x:Key="MatteBlackBrush" Color="{StaticResource MatteBlack}"/>
+    <SolidColorBrush x:Key="MidnightBlueBrush" Color="{StaticResource MidnightBlue}"/>
+    <SolidColorBrush x:Key="OnyxBrush" Color="{StaticResource Onyx}"/>
+    <SolidColorBrush x:Key="AquaBrush" Color="{StaticResource Aqua}"/>
+    <SolidColorBrush x:Key="AzureBrush" Color="{StaticResource Azure}"/>
+    <SolidColorBrush x:Key="BabyBlueBrush" Color="{StaticResource BabyBlue}"/>
+    <SolidColorBrush x:Key="BlueBrush" Color="{StaticResource Blue}"/>
+    <SolidColorBrush x:Key="BlueGrayBrush" Color="{StaticResource BlueGray}"/>
+    <SolidColorBrush x:Key="BlueGreenBrush" Color="{StaticResource BlueGreen}"/>
+    <SolidColorBrush x:Key="BrightBlueBrush" Color="{StaticResource BrightBlue}"/>
+    <SolidColorBrush x:Key="CadetBlueBrush" Color="{StaticResource CadetBlue}"/>
+    <SolidColorBrush x:Key="CobaltBlueBrush" Color="{StaticResource CobaltBlue}"/>
+    <SolidColorBrush x:Key="CornflowerBlueBrush" Color="{StaticResource CornflowerBlue}"/>
+    <SolidColorBrush x:Key="CyanBrush" Color="{StaticResource Cyan}"/>
+    <SolidColorBrush x:Key="DarkBlueBrush" Color="{StaticResource DarkBlue}"/>
+    <SolidColorBrush x:Key="DenimBrush" Color="{StaticResource Denim}"/>
+    <SolidColorBrush x:Key="EgyptianBlueBrush" Color="{StaticResource EgyptianBlue}"/>
+    <SolidColorBrush x:Key="ElectricBlueBrush" Color="{StaticResource ElectricBlue}"/>
+    <SolidColorBrush x:Key="GlaucousBrush" Color="{StaticResource Glaucous}"/>
+    <SolidColorBrush x:Key="IndigoBrush" Color="{StaticResource Indigo}"/>
+    <SolidColorBrush x:Key="IrisBrush" Color="{StaticResource Iris}"/>
+    
+    <SolidColorBrush x:Key="LightBlueBrush" Color="{StaticResource LightBlue}"/>
+    <SolidColorBrush x:Key="NavyBlueBrush" Color="{StaticResource NavyBlue}"/>
+    <SolidColorBrush x:Key="NeonBlueBrush" Color="{StaticResource NeonBlue}"/>
+    <SolidColorBrush x:Key="PastelBlueBrush" Color="{StaticResource PastelBlue}"/>
+    <SolidColorBrush x:Key="PeriwinkleBrush" Color="{StaticResource Periwinkle}"/>
+    <SolidColorBrush x:Key="PowderBlueBrush" Color="{StaticResource PowderBlue}"/>
+    <SolidColorBrush x:Key="RobinEggBlueBrush" Color="{StaticResource RobinEggBlue}"/>
+    <SolidColorBrush x:Key="RoyalBlueBrush" Color="{StaticResource RoyalBlue}"/>
+    <SolidColorBrush x:Key="SapphireBlueBrush" Color="{StaticResource SapphireBlue}"/>
+    <SolidColorBrush x:Key="SkyBlueBrush" Color="{StaticResource SkyBlue}"/>
+    <SolidColorBrush x:Key="SteelBlueBrush" Color="{StaticResource SteelBlue}"/>
+    <SolidColorBrush x:Key="TealBrush" Color="{StaticResource Teal}"/>
+    <SolidColorBrush x:Key="TurquoiseBrush" Color="{StaticResource Turquoise}"/>
+    <SolidColorBrush x:Key="UltramarineBrush" Color="{StaticResource Ultramarine}"/>
+    <SolidColorBrush x:Key="ZaffreBrush" Color="{StaticResource Zaffre}"/>
+
+</ResourceDictionary>

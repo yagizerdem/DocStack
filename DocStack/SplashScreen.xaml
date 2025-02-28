@@ -1,0 +1,57 @@
+﻿<Window x:Class="DocStack.SplashScreen" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:local="clr-namespace:DocStack" 
+        mc:Ignorable="d" Height="450" Width="800" ResizeMode="NoResize">
+    <Grid Background="{StaticResource JetBlackBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="0" Grid.Column="0">
+            <TextBlock FontWeight="Bold" FontSize="20" Foreground="White" Margin="0 15">Doc Stack</TextBlock>
+            <TextBlock FontWeight="Bold" FontSize="12" Foreground="White" Margin="0 0 0 50">Streamline Your Documents with Ease</TextBlock>
+            <ProgressBar Width="180" Height="5" Value="{Binding Percentage}" Maximum="100" Style="{StaticResource ModernProgressBar}"/>
+        </StackPanel>
+        <Grid Grid.Row="0" Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Border Grid.Row="0" Grid.Column="0" CornerRadius="10" Background="White" Padding="5" BorderBrush="LightGray" 
+                    BorderThickness="2" Height="100" Width="150">
+                <Border.Effect>
+                    <DropShadowEffect Color="Black" BlurRadius="8" ShadowDepth="4" Opacity="0.3"/>
+                </Border.Effect>
+                <Image Source="pack://application:,,,/Assets/Images/dataBusiness.png" Width="160" Stretch="UniformToFill" ClipToBounds="True"/>
+            </Border>
+            <Border Grid.Row="0" Grid.Column="1" CornerRadius="10" Background="White" Padding="5" BorderBrush="LightGray" 
+                    BorderThickness="2" Height="100" Width="150">
+                <Border.Effect>
+                    <DropShadowEffect Color="Black" BlurRadius="8" ShadowDepth="4" Opacity="0.3"/>
+                </Border.Effect>
+                <Image Source="pack://application:,,,/Assets/Images/document-analysis.png" Width="160" Stretch="UniformToFill" ClipToBounds="True"/>
+            </Border>
+            <Border Grid.Row="1" Grid.Column="0" CornerRadius="10" Background="White" Padding="5" BorderBrush="LightGray" 
+                    BorderThickness="2" Height="100" Width="150">
+                <Border.Effect>
+                    <DropShadowEffect Color="Black" BlurRadius="8" ShadowDepth="4" Opacity="0.3"/>
+                </Border.Effect>
+                <Image Source="pack://application:,,,/Assets/Images/factors_of_demand.jpg" Width="160" Stretch="UniformToFill" ClipToBounds="True"/>
+            </Border>
+            <Border Grid.Row="1" Grid.Column="1" CornerRadius="10" Background="White" Padding="5" BorderBrush="LightGray" 
+                    BorderThickness="2" Height="100" Width="150">
+                <Border.Effect>
+                    <DropShadowEffect Color="Black" BlurRadius="8" ShadowDepth="4" Opacity="0.3"/>
+                </Border.Effect>
+                <Image Source="pack://application:,,,/Assets/Images/stock2.jpg" Width="160" Stretch="UniformToFill" ClipToBounds="True"/>
+            </Border>
+        </Grid>
+    </Grid>
+</Window>

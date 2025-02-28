@@ -1,0 +1,68 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net9.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="appsettings.json" />
+    <None Remove="Assets\Icons\archive.png" />
+    <None Remove="Assets\Icons\file.png" />
+    <None Remove="Assets\Icons\house.png" />
+    <None Remove="Assets\Icons\search.png" />
+    <None Remove="Assets\Icons\settings.png" />
+    <None Remove="Assets\Icons\share.png" />
+    <None Remove="Assets\Icons\star.png" />
+    <None Remove="Assets\Images\dataBusiness.png" />
+    <None Remove="Assets\Images\document-analysis.png" />
+    <None Remove="Assets\Images\factors_of_demand.jpg" />
+    <None Remove="Assets\Images\stock2.jpg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\Icons\archive.png" />
+    <Resource Include="Assets\Icons\file.png" />
+    <Resource Include="Assets\Icons\house.png" />
+    <Resource Include="Assets\Icons\search.png" />
+    <Resource Include="Assets\Icons\settings.png" />
+    <Resource Include="Assets\Icons\share.png" />
+    <Resource Include="Assets\Icons\star.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="ViewModels\SearchViewModel.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\Icons\app-logo.png" />
+    <Resource Include="Assets\Images\dataBusiness.png" />
+    <Resource Include="Assets\Images\document-analysis.png" />
+    <Resource Include="Assets\Images\factors_of_demand.jpg" />
+    <Resource Include="Assets\Images\stock2.jpg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="9.0.2" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.2" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.2" />
+    <PackageReference Include="ToastNotifications" Version="2.5.1" />
+    <PackageReference Include="ToastNotifications.Messages" Version="2.5.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DataAccess\DataAccess.csproj" />
+    <ProjectReference Include="..\Models\Models.csproj" />
+    <ProjectReference Include="..\Service\Service.csproj" />
+  </ItemGroup>
+
+</Project>

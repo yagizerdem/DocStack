@@ -1,0 +1,194 @@
+﻿<Window x:Class="DocStack.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DocStack"
+        xmlns:views="clr-namespace:DocStack.Views"
+        xmlns:viewModels="clr-namespace:DocStack.ViewModels"
+        xmlns:converters="clr-namespace:DocStack.Converters"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+
+    <!-- Resources -->
+    <Window.Resources>
+        <!-- ViewModel to View Mappings -->
+        <DataTemplate DataType="{x:Type viewModels:HomeViewModel}">
+            <views:HomeView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type viewModels:FavouritesViewModel}">
+            <views:FavouritesView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type viewModels:DocumentsViewModel}">
+            <views:DocumentsView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type viewModels:MyPapersViewModel}">
+            <views:MyPapersView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type viewModels:SearchViewModel}">
+            <views:SearchView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type viewModels:SettingsViewModel}">
+            <views:SettingsView/>
+        </DataTemplate>
+
+        <!-- Converter for Type Checking -->
+        <converters:TypeToBooleanConverter x:Key="TypeToBooleanConverter"/>
+    </Window.Resources>
+
+    <!-- Main Grid Layout -->
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Top Navigation Bar -->
+        <StackPanel Orientation="Horizontal" Background="{StaticResource MatteBlackBrush}">
+            <StackPanel Orientation="Horizontal">
+                <Image Source="pack://application:,,,/Assets/Icons/app-logo.png" 
+                       Margin="20 0 0 0" ClipToBounds="True"/>
+                <TextBlock Foreground="White" VerticalAlignment="Center"
+                           Margin="20 0" FontSize="20" FontWeight="Bold">
+                    DockStack
+                </TextBlock>
+            </StackPanel>
+
+            <TextBlock Foreground="White" VerticalAlignment="Center" Margin="10 0">File</TextBlock>
+            <TextBlock Foreground="White" VerticalAlignment="Center" Margin="10 0">Edit</TextBlock>
+            <TextBlock Foreground="White" VerticalAlignment="Center" Margin="10 0">View</TextBlock>
+        </StackPanel>
+
+        <!-- Main Content Grid -->
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="200"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Sidebar Menu -->
+            <StackPanel Orientation="Vertical" Background="{StaticResource JetBlackBrush}" Grid.Column="0">
+                <!-- Menu Buttons -->
+                <Button Command="{Binding NavigateHomePanel}" Margin="0 20">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="pack://application:,,,/Assets/Icons/house.png" Margin="20 0" Width="20" Height="20" ClipToBounds="True"/>
+                        <TextBlock Text="Home" VerticalAlignment="Center"/>
+                    </StackPanel>
+                    <Button.Style>
+                        <Style TargetType="Button" BasedOn="{StaticResource MenuButtonStyle}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding CurrentViewModel, 
+                                    Converter={StaticResource TypeToBooleanConverter}, 
+                                    ConverterParameter={x:Type viewModels:HomeViewModel}}" 
+                                    Value="True">
+                                    <Setter Property="Foreground" Value="{StaticResource BlackBrush}"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+
+                <Button Command="{Binding NavigateSearchPanel}" Margin="0 20">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="pack://application:,,,/Assets/Icons/search.png" Margin="20 0" Width="20" Height="20" ClipToBounds="True"/>
+                        <TextBlock Text="Search" VerticalAlignment="Center"/>
+                    </StackPanel>
+                    <Button.Style>
+                        <Style TargetType="Button" BasedOn="{StaticResource MenuButtonStyle}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding CurrentViewModel, 
+                                    Converter={StaticResource TypeToBooleanConverter}, 
+                                    ConverterParameter={x:Type viewModels:SearchViewModel}}" 
+                                    Value="True">
+                                    <Setter Property="Foreground" Value="{StaticResource BlackBrush}"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+
+                <Button Command="{Binding NavigateFavouritesPanel}" Margin="0 20">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="pack://application:,,,/Assets/Icons/star.png" Margin="20 0" Width="20" Height="20" ClipToBounds="True"/>
+                        <TextBlock Text="Favourites" VerticalAlignment="Center"/>
+                    </StackPanel>
+                    <Button.Style>
+                        <Style TargetType="Button" BasedOn="{StaticResource MenuButtonStyle}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding CurrentViewModel, 
+                                    Converter={StaticResource TypeToBooleanConverter}, 
+                                    ConverterParameter={x:Type viewModels:FavouritesViewModel}}" 
+                                    Value="True">
+                                    <Setter Property="Foreground" Value="{StaticResource BlackBrush}"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+
+                <Button Command="{Binding NavigateDocumentsPanel}" Margin="0 20">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="pack://application:,,,/Assets/Icons/file.png" Margin="20 0" Width="20" Height="20" ClipToBounds="True"/>
+                        <TextBlock Text="Documents" VerticalAlignment="Center"/>
+                    </StackPanel>
+                    <Button.Style>
+                        <Style TargetType="Button" BasedOn="{StaticResource MenuButtonStyle}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding CurrentViewModel, 
+                            Converter={StaticResource TypeToBooleanConverter}, 
+                            ConverterParameter={x:Type viewModels:DocumentsViewModel}}" 
+                            Value="True">
+                                    <Setter Property="Foreground" Value="{StaticResource BlackBrush}"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+
+
+                <Button Command="{Binding NavigateDocumentsPanel}" Margin="0 20">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="pack://application:,,,/Assets/Icons/archive.png" Margin="20 0" Width="20" Height="20" ClipToBounds="True"/>
+                        <TextBlock Text="My Papers" VerticalAlignment="Center"/>
+                    </StackPanel>
+                    <Button.Style>
+                        <Style TargetType="Button" BasedOn="{StaticResource MenuButtonStyle}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding CurrentViewModel, 
+                                    Converter={StaticResource TypeToBooleanConverter}, 
+                                    ConverterParameter={x:Type viewModels:MyPapersViewModel}}" 
+                                    Value="True">
+                                    <Setter Property="Foreground" Value="{StaticResource BlackBrush}"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+
+                <Button Command="{Binding NavigateSettingsPanel}" Margin="0 20">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="pack://application:,,,/Assets/Icons/settings.png" Margin="20 0" Width="20" Height="20" ClipToBounds="True"/>
+                        <TextBlock Text="Settings" VerticalAlignment="Center"/>
+                    </StackPanel>
+                    <Button.Style>
+                        <Style TargetType="Button" BasedOn="{StaticResource MenuButtonStyle}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding CurrentViewModel, 
+                                    Converter={StaticResource TypeToBooleanConverter}, 
+                                    ConverterParameter={x:Type viewModels:SettingsViewModel}}" 
+                                    Value="True">
+                                    <Setter Property="Foreground" Value="{StaticResource BlackBrush}"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+            </StackPanel>
+
+            <!-- Main Content Display -->
+            <StackPanel Orientation="Vertical" Background="{StaticResource MatteBlackBrush}" Grid.Column="1">
+                <ContentControl Content="{Binding CurrentViewModel}"/>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Window>
