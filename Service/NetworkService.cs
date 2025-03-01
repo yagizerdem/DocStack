@@ -27,11 +27,11 @@ namespace Service
             _semaphoreSlim = new(2, 2);
         }
     
-        public async Task<ServiceResponse<SearchWorksResponse?>> GetWorks(string q, int offset = 0, int limit = 10)
+        public async Task<ServiceResponse<SearchPapersResponse?>> GetWorks(string q, int offset = 0, int limit = 10)
         {
             string uri = $"search/works?q={q}&offset={offset}&limit={limit}";
 
-            SearchWorksResponse? searchWorksResponse = null;
+            SearchPapersResponse? searchWorksResponse = null;
             try
             {
                 ServiceResponse<string> response = await SendRequestWithRetry(uri);
@@ -44,27 +44,27 @@ namespace Service
                         NullValueHandling = NullValueHandling.Ignore 
                     };
 
-                    searchWorksResponse = JsonConvert.DeserializeObject<SearchWorksResponse>(json_string, settings);
+                    searchWorksResponse = JsonConvert.DeserializeObject<SearchPapersResponse>(json_string, settings);
 
                     if (searchWorksResponse == null || searchWorksResponse.results == null)
                     {
-                        return ServiceResponse<SearchWorksResponse?>.Fail("Deserialization failed: No data returned.");
+                        return ServiceResponse<SearchPapersResponse?>.Fail("Deserialization failed: No data returned.");
                     }
                 }
                 else
                 {
-                    return ServiceResponse<SearchWorksResponse?>.Fail("Empty response received.");
+                    return ServiceResponse<SearchPapersResponse?>.Fail("Empty response received.");
                 }
 
-                return ServiceResponse<SearchWorksResponse?>.Success(searchWorksResponse);
+                return ServiceResponse<SearchPapersResponse?>.Success(searchWorksResponse);
             }
             catch (JsonException ex)
             {
-                return ServiceResponse<SearchWorksResponse?>.Fail("JSON Deserialization Error", ex);
+                return ServiceResponse<SearchPapersResponse?>.Fail("JSON Deserialization Error", ex);
             }
             catch (Exception ex)
             {
-                return ServiceResponse<SearchWorksResponse?>.Fail("Unexpected error occurred.", ex);
+                return ServiceResponse<SearchPapersResponse?>.Fail("Unexpected error occurred.", ex);
             }
 
         }

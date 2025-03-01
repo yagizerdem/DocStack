@@ -64,7 +64,7 @@ namespace DocStack.ViewModels
                 (_) => CurrentViewModel != _documentsViewModel);
 
 
-            NavigateSearchPanel.Execute(null);
+            NavigateDocumentsPanel.Execute(null);
         }
         
 

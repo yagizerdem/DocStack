@@ -1,13 +1,14 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Models.Entity;
+using System.Runtime.CompilerServices;
 
 namespace DataAccess
 {
     public class AppDbContext : DbContext
     {
 
-        public DbSet<WorkEntity> Works { get; set; }
+        public DbSet<PaperEntity> Papers { get; set; }
         public AppDbContext()
         {
         }
@@ -26,6 +27,19 @@ namespace DataAccess
             optionsBuilder.UseSqlite($"Data Source={dbPath}");
         }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<PaperEntity>()
+                .Property(e => e.Inserted)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP"); // Default timestamp when row is inserted
+
+            modelBuilder.Entity<PaperEntity>()
+                .Property(e => e.LastUpdated)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP") // Set initial value
+                .ValueGeneratedOnAddOrUpdate(); // Auto-update on modifications
+        }
 
     }
 }

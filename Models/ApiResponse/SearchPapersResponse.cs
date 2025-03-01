@@ -45,7 +45,7 @@ namespace Models.ApiResponse
         public string url { get; set; }
     }
 
-    public class Work
+    public class Paper
     {
         public DateTime acceptedDate { get; set; }
         public object arxivId { get; set; }
@@ -79,12 +79,12 @@ namespace Models.ApiResponse
         public List<Link> links { get; set; }
     }
 
-    public class SearchWorksResponse
+    public class SearchPapersResponse
     {
         public int totalHits { get; set; }
         public int limit { get; set; }
         public int offset { get; set; }
-        public List<Work> results { get; set; }
+        public List<Paper> results { get; set; }
         public string searchId { get; set; }
     }
 

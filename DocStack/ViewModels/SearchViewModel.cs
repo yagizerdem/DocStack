@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -90,19 +91,23 @@ namespace DocStack.ViewModels
 
         public bool IsDetailsView => !IsSearchView;
 
-        private ObservableCollection<WorkEntity> _worksList;
+        private ObservableCollection<PaperEntity> _papersList;
 
-        public ObservableCollection<WorkEntity> WorksList
+        public ObservableCollection<PaperEntity> PapersList
         {
-            get => _worksList;
+            get => _papersList;
             set
             {
-                _worksList = value;
-                OnPropertyChanged(nameof(WorksList));
+                _papersList = value;
+                OnPropertyChanged(nameof(PapersList));
             }
         }
 
         private NetworkService _networkService;
+
+
+        private PaperService _paperService;
+
         public ICommand SearchCommand { get; set; }
 
         public ICommand LoadMoreDocumentCommand { get; set; }
@@ -119,31 +124,31 @@ namespace DocStack.ViewModels
 
         private int _limit = 10;
 
-        private Dictionary<WorkEntity, Work> _keyValuePairs;
+        private Dictionary<PaperEntity, Paper> _keyValuePairs;
 
-        private WorkEntity _selectedWorkEntity;
+        private PaperEntity _selectedPaperEntity;
 
-        public WorkEntity SelectedWorkEntity
+        public PaperEntity SelectedPaperEntity
         {
-            get => _selectedWorkEntity;
+            get => _selectedPaperEntity;
             set {
-                _selectedWorkEntity = value;
-                OnPropertyChanged(nameof(SelectedWorkEntity));
+                _selectedPaperEntity = value;
+                OnPropertyChanged(nameof(SelectedPaperEntity));
                 OnSelectedWorkEntityChanged(); 
             }
         }
 
 
         // contains full details
-        private Work _selectedWork;
+        private Paper _selectedPaper;
 
-        public Work SelectedWork
+        public Paper SelectedPaper
         {
-            get => _selectedWork;
+            get => _selectedPaper;
             set
             {
-                _selectedWork = value;
-                OnPropertyChanged(nameof(SelectedWork));
+                _selectedPaper = value;
+                OnPropertyChanged(nameof(SelectedPaper));
             }
         }
         //
@@ -173,20 +178,13 @@ namespace DocStack.ViewModels
             StartDownloadCommand = new RelayCommand<string>(async (_) => await StartDownload());
 
             _networkService = App.ServiceProvider.GetRequiredService<NetworkService>();
+            _paperService = App.ServiceProvider.GetRequiredService<PaperService>();
 
             IsLoading = false;
-            WorksList = new();
+            PapersList = new();
             _keyValuePairs = new();
             IsListView = true;
-            IsSearchView = false;
-
-            SelectedWork = new()
-            {
-                title = "test titleafjlajflajflazlfjalfjaljfjalfalflajflajflalfljafljaljflj",
-                downloadUrl = "http ",
-                fieldOfStudy = "study field",
-                fullText = String.Join("", Enumerable.Range(0, 100).ToList())
-            };
+            IsSearchView = true;
         }
 
         private async Task SearchDocument()
@@ -218,7 +216,7 @@ namespace DocStack.ViewModels
                 int offset = _pageIndex * _limit;
                 var response = await _networkService.GetWorks(q, offset, _limit);
 
-                SearchWorksResponse? data = response.Data;
+                SearchPapersResponse? data = response.Data;
 
                 if (data == null)
                 {
@@ -228,7 +226,7 @@ namespace DocStack.ViewModels
 
                 data.results.ToList().ForEach(work =>
                 {
-                    WorkEntity workEntity = new()
+                    PaperEntity workEntity = new()
                     {
                         Abstract = work.@abstract,
                         Authors = String.Join(" ", work.authors.ToList().Select(x => x.name)),
@@ -239,7 +237,7 @@ namespace DocStack.ViewModels
                         Publisher = work.publisher,
                     };
 
-                    WorksList.Add(workEntity);
+                    PapersList.Add(workEntity);
                     _keyValuePairs.Add(workEntity, work);
                 });
 
@@ -261,17 +259,17 @@ namespace DocStack.ViewModels
     
         private void ClearDocuments()
         {
-            WorksList.Clear();
+            PapersList.Clear();
             _keyValuePairs.Clear();
             _pageIndex = 0;
         }
 
         private void OnSelectedWorkEntityChanged()
         {
-            if (SelectedWorkEntity != null)
+            if (SelectedPaperEntity != null)
             {
                 IsSearchView = false;
-                SelectedWork =  _keyValuePairs[SelectedWorkEntity];
+                SelectedPaper =  _keyValuePairs[SelectedPaperEntity];
             }
         }
 
@@ -281,13 +279,19 @@ namespace DocStack.ViewModels
     
         private async Task SaveToDatabase()
         {
-            var e = this.SelectedWorkEntity;
-            ;
+
+            PaperEntity paper = this.SelectedPaperEntity;
+            var response = await _paperService.AddPaperAsync(paper);
+
+            if(response.Ok)
+                Toaster.ShowSuccess(response.Message);
+            else 
+                Toaster.ShowError(response.Message);
         }
 
         private async Task StartDownload()
         {
-            string url = SelectedWork.downloadUrl;
+            string url = SelectedPaper.downloadUrl;
 
             // track progress of download
             var progress = new Progress<double>(percentage =>
@@ -295,14 +299,22 @@ namespace DocStack.ViewModels
                 this.DownloadProgress = percentage;
             });
 
-            string downloadsFolder = KnownFolders.GetPath(KnownFolder.Downloads);
+            string downloadsFolder = KnownFolders.GetPath(KnownFolder.Downloads) ?? 
+                Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
 
-            var response = await _networkService.DownloadFromInternet(url, downloadsFolder, progress);
+            var fileName = DateTime.Now.ToString("yyyy-MM-dd'T'HH-mm-ss.fff") + ".pdf";
+
+            string fullFilePath = Path.Join(downloadsFolder, fileName);
+
+            var response = await _networkService.DownloadFromInternet(url, fullFilePath, progress);
 
             if (!response.Ok)
                 Toaster.ShowError(response.Message);    
             else
                 Toaster.ShowSuccess(response.Message);
+            
+            this.DownloadProgress = 0;
+
         }
     
     }

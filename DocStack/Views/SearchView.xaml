@@ -86,7 +86,7 @@
             </StackPanel>
 
 
-            <!-- Display Works -->
+            <!-- Display Papers -->
             <Grid Grid.Row="2"
       Visibility="{Binding IsNotLoading, Converter={StaticResource BooleanToVisibilityConverter}}"
       Margin="20">
@@ -97,7 +97,7 @@
                 </Grid.RowDefinitions>
 
                 <!--list view-->
-                <ListBox ItemsSource="{Binding WorksList}"
+                <ListBox ItemsSource="{Binding PapersList}"
          Grid.Row="0"
          Background="Transparent"
          ScrollViewer.VerticalScrollBarVisibility="Auto"
@@ -105,11 +105,11 @@
          HorizontalAlignment="Stretch"
          Width="Auto"
          HorizontalContentAlignment="Stretch"
-         SelectedItem="{Binding SelectedWorkEntity, Mode=TwoWay}"
+         SelectedItem="{Binding SelectedPaperEntity, Mode=TwoWay}"
          Visibility="{Binding IsListView, Converter={StaticResource BooleanToVisibilityConverter}}">
 
                     <ListBox.ItemTemplate>
-                        <DataTemplate DataType="entity:WorkEntity">
+                        <DataTemplate DataType="entity:PaperEntity">
                             <Grid Margin="20">
 
                                 <Grid.RowDefinitions>
@@ -165,7 +165,7 @@
                 </ListBox>
 
                 <!--grid view-->
-                <ListView ItemsSource="{Binding WorksList}"
+                <ListView ItemsSource="{Binding PapersList}"
           Grid.Row="0"
           Background="Transparent"
           ScrollViewer.VerticalScrollBarVisibility="Auto"
@@ -173,7 +173,7 @@
           HorizontalAlignment="Stretch"
           Width="Auto"
           HorizontalContentAlignment="Stretch"
-          SelectedItem="{Binding SelectedWorkEntity, Mode=TwoWay}"
+          SelectedItem="{Binding SelectedPaperEntity, Mode=TwoWay}"
           Visibility="{Binding IsGridView, Converter={StaticResource BooleanToVisibilityConverter}}">
 
                     <ListView.ItemsPanel>
@@ -184,7 +184,7 @@
 
 
                     <ListView.ItemTemplate>
-                        <DataTemplate DataType="entity:WorkEntity">
+                        <DataTemplate DataType="entity:PaperEntity">
                             <Border BorderBrush="Gray" BorderThickness="1" Padding="10" Margin="10">
                                 <StackPanel Width="250">
                                     <TextBlock FontSize="16" FontWeight="Bold"
@@ -273,7 +273,7 @@
                         FontSize="16">Title :</Label>
 
                     <TextBlock Grid.Column="1"
-                               Text="{Binding SelectedWork.title}"
+                               Text="{Binding SelectedPaper.title}"
                                TextWrapping="Wrap"
                                FontSize="24"/>
                     </Grid>
@@ -293,7 +293,7 @@
                             FontSize="16">Download Url :</Label>
 
                     <TextBlock Grid.Column="1"
-                               Text="{Binding SelectedWork.downloadUrl}"
+                               Text="{Binding SelectedPaper.downloadUrl}"
                                FontSize="10"
                                TextWrapping="Wrap"
                                VerticalAlignment="Center"/>
@@ -322,7 +322,7 @@
                            VerticalAlignment="Top">Field Of Study :</Label>
 
                     <TextBlock Grid.Column="1"
-                                Text="{Binding SelectedWork.fieldOfStudy}"
+                                Text="{Binding SelectedPaper.fieldOfStudy}"
                                 FontSize="24"
                                 TextWrapping="Wrap"/>
                 </Grid>
@@ -347,7 +347,7 @@
                             <Style TargetType="{x:Type ScrollBar}" BasedOn="{StaticResource ModernScrollBar}"/>
                         </ScrollViewer.Resources>
                         
-                        <TextBlock Text="{Binding SelectedWork.fullText}"
+                        <TextBlock Text="{Binding SelectedPaper.fullText}"
                                    FontSize="24"
                                    TextWrapping="Wrap"/>
                     </ScrollViewer>

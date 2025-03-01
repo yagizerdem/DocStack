@@ -8,5 +8,13 @@ namespace DocStack.ViewModels
 {
     public class DocumentsViewModel : BaseViewModel
     {
+
+        public DocumentsViewModel()
+        {
+            
+        }
+
+
+
     }
 }

@@ -15,6 +15,6 @@
         </Style>
     </UserControl.Resources>
     <Grid Background="{StaticResource MatteBlackBrush}">
-        <TextBlock>documents View</TextBlock>
+        <TextBlock Text="{Binding test}"></TextBlock>
     </Grid>
 </UserControl>

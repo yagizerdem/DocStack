@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccess.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250301092533_mig1")]
+    [Migration("20250301134820_mig1")]
     partial class mig1
     {
         /// <inheritdoc />
@@ -20,43 +20,46 @@ namespace DataAccess.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.2");
 
-            modelBuilder.Entity("Models.Entity.WorkEntity", b =>
+            modelBuilder.Entity("Models.Entity.PaperEntity", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Abstract")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Authors")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("DOI")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("FullTextLink")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<DateTime>("Inserted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                    b.Property<DateTime>("LastUpdated")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("TEXT")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
                     b.Property<string>("Publisher")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Title")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Year")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Works");
+                    b.ToTable("Papers");
                 });
 #pragma warning restore 612, 618
         }
