@@ -4,7 +4,7 @@
                     >
 
     <converters:ProgressToScaleConverter x:Key="ProgressToScaleConverter" />
-
+    
     <Style x:Key="ModernProgressBar" TargetType="ProgressBar">
         <Setter Property="Template">
             <Setter.Value>
@@ -82,5 +82,78 @@
             </Setter.Value>
         </Setter>
     </Style>
-    
+
+    <Style x:Key="ModernProgressBar2" TargetType="ProgressBar">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ProgressBar">
+                    <Grid x:Name="RootGrid" Background="Transparent">
+                        <!-- Track (Background) -->
+                        <Border 
+                        x:Name="PART_Track"
+                        CornerRadius="3" 
+                        Background="#E0E0E0" 
+                        Height="5"/>
+
+                        <!-- Indicator (Progress) -->
+                        <Border x:Name="PART_Indicator" 
+                            CornerRadius="3"
+                            Height="5"
+                            HorizontalAlignment="Left">
+                            <Border.Background>
+                                <LinearGradientBrush StartPoint="0,0" 
+                                                 EndPoint="1,0">
+                                    <GradientStop Color="{StaticResource DarkGreen}" Offset="0"/>
+                                    <GradientStop Color="{StaticResource BlueGreen}" Offset="1"/>
+                                </LinearGradientBrush>
+                            </Border.Background>
+                        </Border>
+                    </Grid>
+
+                    <!-- Triggers for Animation -->
+                    <ControlTemplate.Triggers>
+                        <!-- Determinate Mode -->
+                        <Trigger Property="IsIndeterminate" Value="False">
+                            <Setter TargetName="PART_Indicator" Property="Width"
+                                Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth, Converter={StaticResource ProgressToScaleConverter}}" />
+                        </Trigger>
+
+                        <!-- Indeterminate Mode -->
+                        <Trigger Property="IsIndeterminate" Value="True">
+                            <Setter TargetName="PART_Indicator" Property="Width" Value="50"/>
+                            <Setter TargetName="PART_Indicator" Property="HorizontalAlignment" Value="Left"/>
+                            <Setter TargetName="PART_Indicator" Property="Background">
+                                <Setter.Value>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                        <GradientStop Color="{StaticResource DarkGreen}" Offset="0"/>
+                                        <GradientStop Color="{StaticResource BlueGreen}" Offset="1"/>
+                                    </LinearGradientBrush>
+                                </Setter.Value>
+                            </Setter>
+                            <Setter TargetName="PART_Indicator" Property="RenderTransform">
+                                <Setter.Value>
+                                    <TranslateTransform x:Name="PART_TranslateTransform" />
+                                </Setter.Value>
+                            </Setter>
+                            <Trigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard RepeatBehavior="Forever">
+                                        <DoubleAnimation Storyboard.TargetName="PART_TranslateTransform"
+                                                     Storyboard.TargetProperty="X"
+                                                     From="-50" To="100" Duration="0:0:1"
+                                                     AutoReverse="True"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.EnterActions>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+
+
+
+
 </ResourceDictionary>

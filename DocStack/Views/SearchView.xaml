@@ -21,42 +21,46 @@
     </UserControl.Resources>
 
     <Grid Background="{StaticResource MatteBlackBrush}">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="40"></RowDefinition>
-            <RowDefinition Height="50"></RowDefinition>
-            <RowDefinition Height="*"></RowDefinition>
-        </Grid.RowDefinitions>
+        
+        <!--search view-->
+        <Grid Visibility="{Binding IsSearchView, Converter={StaticResource BooleanToVisibilityConverter}}">
 
-        <!--switch views-->
-        <StackPanel Grid.Row="0"
+            <Grid.RowDefinitions>
+                <RowDefinition Height="40"></RowDefinition>
+                <RowDefinition Height="50"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+            </Grid.RowDefinitions>
+
+            <!--switch views-->
+            <StackPanel Grid.Row="0"
                     Orientation="Horizontal"
                     HorizontalAlignment="Right">
-            <CheckBox IsChecked="{Binding IsListView, Mode=TwoWay}"
+                <CheckBox IsChecked="{Binding IsListView, Mode=TwoWay}"
                       Margin="20 0" 
                       Foreground="White"
                       FontWeight="Bold">List View</CheckBox>
-            <CheckBox IsChecked="{Binding IsListView, Converter={StaticResource BooleanToInverseBooleanConverter}}"
+                <CheckBox IsChecked="{Binding IsListView, Converter={StaticResource BooleanToInverseBooleanConverter}}"
                       Margin="20 0"
                       Foreground="White"
                       FontWeight="Bold">Grid View</CheckBox>
 
-        </StackPanel>
-        
-        <!--search bar-->
-        <Grid Grid.Row="1">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"></ColumnDefinition>
-                <ColumnDefinition Width="2*"></ColumnDefinition>
-                <ColumnDefinition Width="*"></ColumnDefinition>
-            </Grid.ColumnDefinitions>
-            <Grid
-                Grid.Column="1">
+            </StackPanel>
+
+            <!--search bar-->
+            <Grid Grid.Row="1">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"></ColumnDefinition>
-                    <ColumnDefinition Width="100"></ColumnDefinition>
+                    <ColumnDefinition Width="2*"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
+                <Grid
+                Grid.Column="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                        <ColumnDefinition Width="100"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
 
-                <TextBox 
+                    <TextBox 
                     Grid.Column="0"
                     Margin="10" 
               Style="{StaticResource  ModernTextBox}"
@@ -66,34 +70,34 @@
               Text="{Binding Query, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
               KeyDown="TextBox_KeyDown"></TextBox>
 
-                <Button  Grid.Column="1" 
+                    <Button  Grid.Column="1" 
                          Margin="20 0 0 0"
                          Height="30"
                          Style="{StaticResource ModernButton}"
                          Command="{Binding SearchCommand}">Search</Button>
+                </Grid>
             </Grid>
-        </Grid>
 
-        <!--loader-->
-        <StackPanel 
+            <!--loader-->
+            <StackPanel 
             Grid.Row="2"
             Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
-            <components:Spinner Margin="0 50"></components:Spinner>
-        </StackPanel>
+                <components:Spinner Margin="0 50"></components:Spinner>
+            </StackPanel>
 
 
-        <!-- Display Works -->
-        <Grid Grid.Row="2"
+            <!-- Display Works -->
+            <Grid Grid.Row="2"
       Visibility="{Binding IsNotLoading, Converter={StaticResource BooleanToVisibilityConverter}}"
       Margin="20">
 
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*" />
-                <RowDefinition Height="120"></RowDefinition>
-            </Grid.RowDefinitions>
-            
-            <!--list view-->
-            <ListBox ItemsSource="{Binding WorksList}"
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="120"></RowDefinition>
+                </Grid.RowDefinitions>
+
+                <!--list view-->
+                <ListBox ItemsSource="{Binding WorksList}"
          Grid.Row="0"
          Background="Transparent"
          ScrollViewer.VerticalScrollBarVisibility="Auto"
@@ -104,17 +108,17 @@
          SelectedItem="{Binding SelectedWorkEntity, Mode=TwoWay}"
          Visibility="{Binding IsListView, Converter={StaticResource BooleanToVisibilityConverter}}">
 
-                <ListBox.ItemTemplate>
-                    <DataTemplate DataType="entity:WorkEntity">
-                        <Grid Margin="20">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate DataType="entity:WorkEntity">
+                            <Grid Margin="20">
 
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
 
-                            <TextBlock
+                                <TextBlock
                         Grid.Row="0"
                         Margin="0,0,0,8"
                         FontSize="16"
@@ -123,45 +127,45 @@
                         Text="{Binding Title}"
                         TextWrapping="Wrap" />
 
-                            <StackPanel
+                                <StackPanel
                         Grid.Row="1"
                         Margin="0,0,0,8"
                         Orientation="Horizontal">
-                                <TextBlock
+                                    <TextBlock
                             FontSize="14"
                             Foreground="#B8B8B8"
                             Text="{Binding Publisher}"
                             TextWrapping="Wrap" />
-                                <TextBlock
+                                    <TextBlock
                             Margin="8,0"
                             FontSize="14"
                             Foreground="#B8B8B8"
                             Text=" • " />
-                                <TextBlock
+                                    <TextBlock
                             FontSize="14"
                             Foreground="#B8B8B8"
                             Text="{Binding Authors}"
                             TextWrapping="Wrap" />
-                            </StackPanel>
+                                </StackPanel>
 
-                        </Grid>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
 
-                <ListBox.Resources>
-                    <Style TargetType="{x:Type ScrollBar}" BasedOn="{StaticResource ModernScrollBar}"/>
-                </ListBox.Resources>
+                    <ListBox.Resources>
+                        <Style TargetType="{x:Type ScrollBar}" BasedOn="{StaticResource ModernScrollBar}"/>
+                    </ListBox.Resources>
 
-                <ListBox.ItemContainerStyle>
-                    <Style TargetType="ListBoxItem">
-                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                    </Style>
-                </ListBox.ItemContainerStyle>
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="ListBoxItem">
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                        </Style>
+                    </ListBox.ItemContainerStyle>
 
-            </ListBox>
+                </ListBox>
 
-            <!--grid view-->
-            <ListView ItemsSource="{Binding WorksList}"
+                <!--grid view-->
+                <ListView ItemsSource="{Binding WorksList}"
           Grid.Row="0"
           Background="Transparent"
           ScrollViewer.VerticalScrollBarVisibility="Auto"
@@ -172,43 +176,43 @@
           SelectedItem="{Binding SelectedWorkEntity, Mode=TwoWay}"
           Visibility="{Binding IsGridView, Converter={StaticResource BooleanToVisibilityConverter}}">
 
-                <ListView.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <WrapPanel Width="Auto" MaxWidth="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=ListView}}" />
-                    </ItemsPanelTemplate>
-                </ListView.ItemsPanel>
+                    <ListView.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel Width="Auto" MaxWidth="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=ListView}}" />
+                        </ItemsPanelTemplate>
+                    </ListView.ItemsPanel>
 
 
-                <ListView.ItemTemplate>
-                    <DataTemplate DataType="entity:WorkEntity">
-                        <Border BorderBrush="Gray" BorderThickness="1" Padding="10" Margin="10">
-                            <StackPanel Width="250">
-                                <TextBlock FontSize="16" FontWeight="Bold"
+                    <ListView.ItemTemplate>
+                        <DataTemplate DataType="entity:WorkEntity">
+                            <Border BorderBrush="Gray" BorderThickness="1" Padding="10" Margin="10">
+                                <StackPanel Width="250">
+                                    <TextBlock FontSize="16" FontWeight="Bold"
                                Foreground="#f8f8f8"
                                Text="{Binding Title}"
                                TextWrapping="Wrap" />
-                                <TextBlock FontSize="14" Foreground="#B8B8B8"
+                                    <TextBlock FontSize="14" Foreground="#B8B8B8"
                                Text="{Binding Publisher}"
                                TextWrapping="Wrap" />
-                                <TextBlock FontSize="14" Foreground="#B8B8B8"
+                                    <TextBlock FontSize="14" Foreground="#B8B8B8"
                                Text="{Binding Authors}"
                                TextWrapping="Wrap" />
-                            </StackPanel>
-                        </Border>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
 
-                <ListView.Resources>
-                    <Style TargetType="{x:Type ScrollBar}" BasedOn="{StaticResource ModernScrollBar}"/>
-                </ListView.Resources>
+                    <ListView.Resources>
+                        <Style TargetType="{x:Type ScrollBar}" BasedOn="{StaticResource ModernScrollBar}"/>
+                    </ListView.Resources>
 
-            </ListView>
+                </ListView>
 
-            <StackPanel 
+                <StackPanel 
                 Grid.Row="1"
                 Orientation="Vertical">
-                
-                <Button 
+
+                    <Button 
                Command="{Binding LoadMoreDocumentCommand}"
                Margin="10"
                Height="35"
@@ -217,15 +221,165 @@
                Style="{StaticResource ModernButton2}"></Button>
 
 
-                <Button 
+                    <Button 
                Command="{Binding ClearDocumentsCommand}"
                Margin="10"
                Height="35"
                MaxWidth="350"
                Content="Clear"
                Style="{StaticResource ModernButton3}"></Button>
-            </StackPanel>
-        </Grid>
+                </StackPanel>
+            </Grid>
 
+        </Grid>
+        
+        <!--details view-->
+
+        <Grid Visibility="{Binding IsDetailsView, Converter={StaticResource BooleanToVisibilityConverter}}">
+
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="*"></RowDefinition>
+                    <RowDefinition Height="80"></RowDefinition>
+                    <RowDefinition Height="40"></RowDefinition>
+                </Grid.RowDefinitions>
+                <!--go back button--> 
+                <Border CornerRadius="5"
+                        Grid.Row="0">
+                    <Button Style="{StaticResource ModernButton2}"
+                        Margin="10"
+                        Width="120"
+                        Height="30"
+                        HorizontalAlignment="Left"
+                        Command="{Binding GoToSearchViewCommand}">
+                        Go Back
+                    </Button>
+                </Border>
+
+                <Grid Grid.Row="1"
+                      Margin="0 20">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Label Grid.Column="0"
+                        Foreground="White"
+                        FontWeight="Bold"
+                        FontSize="16">Title :</Label>
+
+                    <TextBlock Grid.Column="1"
+                               Text="{Binding SelectedWork.title}"
+                               TextWrapping="Wrap"
+                               FontSize="24"/>
+                    </Grid>
+
+
+                <Grid Grid.Row="2" 
+                      Margin="0 20">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="150"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Label Grid.Column="0"
+                            Foreground="White"
+                            FontWeight="Bold"
+                            FontSize="16">Download Url :</Label>
+
+                    <TextBlock Grid.Column="1"
+                               Text="{Binding SelectedWork.downloadUrl}"
+                               FontSize="10"
+                               TextWrapping="Wrap"
+                               VerticalAlignment="Center"/>
+
+                    <Button Style="{StaticResource ModernButton2}" 
+                            Grid.Column="2"
+                            FontSize="10"
+                            Command="{Binding StartDownloadCommand}">
+                        Download From Internet
+                    </Button>
+                    
+                </Grid>
+
+
+                <Grid Grid.Row="3"
+                       Margin="0 20">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Label Grid.Column="0"
+                           Foreground="White"
+                           FontWeight="Bold"
+                           FontSize="16"    
+                           VerticalAlignment="Top">Field Of Study :</Label>
+
+                    <TextBlock Grid.Column="1"
+                                Text="{Binding SelectedWork.fieldOfStudy}"
+                                FontSize="24"
+                                TextWrapping="Wrap"/>
+                </Grid>
+
+                <Grid Grid.Row="4"
+                       Margin="0 20">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Label Grid.Column="0"
+                            Foreground="White"
+                            FontWeight="Bold"
+                            FontSize="16"    
+                            VerticalAlignment="Top">Full Text:</Label>
+
+                    <ScrollViewer 
+                        Grid.Column="1"
+                        VerticalScrollBarVisibility="Auto">
+                        <ScrollViewer.Resources>
+                            <Style TargetType="{x:Type ScrollBar}" BasedOn="{StaticResource ModernScrollBar}"/>
+                        </ScrollViewer.Resources>
+                        
+                        <TextBlock Text="{Binding SelectedWork.fullText}"
+                                   FontSize="24"
+                                   TextWrapping="Wrap"/>
+                    </ScrollViewer>
+                    
+                </Grid>
+
+                    <!--save to datbase button-->
+                <Border CornerRadius="5"
+                   Grid.Row="5">
+                    <Button Style="{StaticResource ModernButton2}"
+                   Margin="10"
+                   Width="120"
+                   Height="30"
+                   HorizontalAlignment="Center"
+                   Command="{Binding SaveToDatabaseCommand}">
+                        Save
+                    </Button>
+                </Border>
+                
+                <ProgressBar Grid.Row="6"
+             Margin="10"
+             MinWidth="200"
+             MaxWidth="400"
+             Minimum="0" Maximum="100"
+             Value="{Binding DownloadProgress}"
+             Style="{StaticResource ModernProgressBar2}"/>
+
+
+            </Grid>
+        </Grid>
+        
     </Grid>
+    
+
 </UserControl>   

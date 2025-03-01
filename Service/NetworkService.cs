@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Reflection.Metadata;
 using System.Text;
@@ -129,6 +130,45 @@ namespace Service
             catch (Exception ex)
             {
                 return ServiceResponse<string>.Fail("An unexpected error occurred.", ex);
+            }
+        }
+
+        public async Task<ServiceResponse<object>> DownloadFromInternet(string url, string destinationPath, IProgress<double> progress = null)
+        {
+            try
+            {
+                using (HttpResponseMessage response = await _httpClient.GetAsync(url, HttpCompletionOption.ResponseHeadersRead))
+                {
+                    response.EnsureSuccessStatusCode(); 
+
+                    long? totalBytes = response.Content.Headers.ContentLength;
+                    using (Stream contentStream = await response.Content.ReadAsStreamAsync(),
+                                  fileStream = new FileStream(destinationPath, FileMode.Create, FileAccess.Write, FileShare.None, 8192, true))
+                    {
+                        byte[] buffer = new byte[8192];
+                        long totalRead = 0;
+                        int read;
+
+                        while ((read = await contentStream.ReadAsync(buffer, 0, buffer.Length)) > 0)
+                        {
+                            await fileStream.WriteAsync(buffer, 0, read);
+                            totalRead += read;
+
+                            if (totalBytes.HasValue)
+                            {
+                                double percentage = (double)totalRead / totalBytes.Value * 100;
+                                progress?.Report(percentage);
+                            }
+                        }
+                    }
+                }
+
+                return ServiceResponse<object>.Success(null, $"Download complete: {destinationPath}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error downloading file: " + ex.Message);
+                return ServiceResponse<object>.Fail($"Error downloading file : {ex.Message}" ,ex);
             }
         }
 

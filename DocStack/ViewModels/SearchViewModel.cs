@@ -12,6 +12,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Reflection.Emit;
+using System.Runtime.InteropServices;
 using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
@@ -71,6 +72,23 @@ namespace DocStack.ViewModels
         }
         public bool IsGridView => !IsListView;
 
+        private bool _isSearchView;
+
+        public bool IsSearchView
+        {
+            get => _isSearchView;
+            set
+            {
+                if (_isSearchView != value)
+                {
+                    _isSearchView = value;
+                    OnPropertyChanged(nameof(IsSearchView));
+                    OnPropertyChanged(nameof(IsDetailsView));
+                }
+            }
+        }
+
+        public bool IsDetailsView => !IsSearchView;
 
         private ObservableCollection<WorkEntity> _worksList;
 
@@ -91,6 +109,12 @@ namespace DocStack.ViewModels
 
         public ICommand ClearDocumentsCommand { get; set; }
 
+        public ICommand GoToSearchViewCommand { get; set; }
+
+        public ICommand SaveToDatabaseCommand { get; set; }
+
+        public ICommand StartDownloadCommand { get; set; }
+
         private int _pageIndex = 0;
 
         private int _limit = 10;
@@ -109,11 +133,44 @@ namespace DocStack.ViewModels
             }
         }
 
+
+        // contains full details
+        private Work _selectedWork;
+
+        public Work SelectedWork
+        {
+            get => _selectedWork;
+            set
+            {
+                _selectedWork = value;
+                OnPropertyChanged(nameof(SelectedWork));
+            }
+        }
+        //
+
+        private double _downloadProgress;
+
+        public double DownloadProgress
+        {
+            get => _downloadProgress;
+            set
+            {
+                if(_downloadProgress != value)
+                {
+                    _downloadProgress = value;
+                    OnPropertyChanged(nameof(DownloadProgress));
+                }
+            }
+        }
+
         public SearchViewModel()
         {
-            SearchCommand = new RelayCommand<string>((_)=>SearchDocument());
-            LoadMoreDocumentCommand = new RelayCommand<string>((_) => LoadMoreDocument());
+            SearchCommand = new RelayCommand<string>(async (_) => await SearchDocument());
+            LoadMoreDocumentCommand = new RelayCommand<string>(async (_) => await LoadMoreDocument());
             ClearDocumentsCommand = new RelayCommand<string>((_) => ClearDocuments());
+            GoToSearchViewCommand = new RelayCommand<string>((_) => GoToSearchView());
+            SaveToDatabaseCommand = new RelayCommand<string>(async (_) => await SaveToDatabase());
+            StartDownloadCommand = new RelayCommand<string>(async (_) => await StartDownload());
 
             _networkService = App.ServiceProvider.GetRequiredService<NetworkService>();
 
@@ -121,6 +178,15 @@ namespace DocStack.ViewModels
             WorksList = new();
             _keyValuePairs = new();
             IsListView = true;
+            IsSearchView = false;
+
+            SelectedWork = new()
+            {
+                title = "test titleafjlajflajflazlfjalfjaljfjalfalflajflajflalfljafljaljflj",
+                downloadUrl = "http ",
+                fieldOfStudy = "study field",
+                fullText = String.Join("", Enumerable.Range(0, 100).ToList())
+            };
         }
 
         private async Task SearchDocument()
@@ -204,12 +270,77 @@ namespace DocStack.ViewModels
         {
             if (SelectedWorkEntity != null)
             {
-                Work workModel =  _keyValuePairs[SelectedWorkEntity];
-                ;
+                IsSearchView = false;
+                SelectedWork =  _keyValuePairs[SelectedWorkEntity];
             }
         }
 
         public async void HitSearchKey() => await SearchDocument();
-        
+
+        private void GoToSearchView() => IsSearchView = true;
+    
+        private async Task SaveToDatabase()
+        {
+            var e = this.SelectedWorkEntity;
+            ;
+        }
+
+        private async Task StartDownload()
+        {
+            string url = SelectedWork.downloadUrl;
+
+            // track progress of download
+            var progress = new Progress<double>(percentage =>
+            {
+                this.DownloadProgress = percentage;
+            });
+
+            string downloadsFolder = KnownFolders.GetPath(KnownFolder.Downloads);
+
+            var response = await _networkService.DownloadFromInternet(url, downloadsFolder, progress);
+
+            if (!response.Ok)
+                Toaster.ShowError(response.Message);    
+            else
+                Toaster.ShowSuccess(response.Message);
+        }
+    
     }
+
+
+    public enum KnownFolder
+    {
+        Contacts,
+        Downloads,
+        Favorites,
+        Links,
+        SavedGames,
+        SavedSearches
+    }
+
+    public static class KnownFolders
+    {
+        private static readonly Dictionary<KnownFolder, Guid> _guids = new()
+        {
+            [KnownFolder.Contacts] = new("56784854-C6CB-462B-8169-88E350ACB882"),
+            [KnownFolder.Downloads] = new("374DE290-123F-4565-9164-39C4925E467B"),
+            [KnownFolder.Favorites] = new("1777F761-68AD-4D8A-87BD-30B759FA33DD"),
+            [KnownFolder.Links] = new("BFB9D5E0-C6A9-404C-B2B2-AE6DB6AF4968"),
+            [KnownFolder.SavedGames] = new("4C5C32FF-BB9D-43B0-B5B4-2D72E54EAAA4"),
+            [KnownFolder.SavedSearches] = new("7D1D3A04-DEBB-4115-95CF-2F29DA2920DA")
+        };
+
+        public static string GetPath(KnownFolder knownFolder)
+        {
+            return SHGetKnownFolderPath(_guids[knownFolder], 0);
+        }
+
+        [DllImport("shell32",
+            CharSet = CharSet.Unicode, ExactSpelling = true, PreserveSig = false)]
+        private static extern string SHGetKnownFolderPath(
+            [MarshalAs(UnmanagedType.LPStruct)] Guid rfid, uint dwFlags,
+            nint hToken = 0);
+    }
+
+
 }
