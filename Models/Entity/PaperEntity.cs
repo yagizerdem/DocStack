@@ -10,11 +10,10 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Models.Entity
 {
-    public class PaperEntity
+    public class PaperEntity : BaseEntity
     {
 
-        [Key]
-        public Guid Id { get; set; }
+
         public string? Authors { get; set; } 
         public string? Title { get; set; }
         public string? Publisher { get; set; }
@@ -23,11 +22,8 @@ namespace Models.Entity
         public string? Abstract { get; set; }
         public string? Year { get; set; }
 
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public DateTime Inserted { get; set; }
 
-        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
-        public DateTime LastUpdated { get; set; }
-
+        public Guid? StarredEntityId { get; set; }
+        public StarredEntity? StarredEntity { get; set; }
     }
 }

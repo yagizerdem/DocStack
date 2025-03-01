@@ -1,6 +1,8 @@
 ﻿using DataAccess;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Models;
+using Models.ApiResponse;
 using Models.Entity;
 using System;
 using System.Collections.Generic;
@@ -33,6 +35,58 @@ namespace Service
             catch (Exception ex)
             {
                 return ServiceResponse<PaperEntity>.Fail("An error occurred while adding the paper", ex);
+            }
+        }
+
+        public async Task<ServiceResponse<List<PaperEntity>>> GetPapersAsync(
+            string search,
+            int offset, 
+            int limit,
+            bool titleFilter,
+            bool authroFilter,
+            bool publisherFilter,
+            bool yearFilter,
+            bool orderByAscending = true)
+        {
+            try
+            {
+
+                if (string.IsNullOrEmpty(search)) search = "";
+
+                var query = _appDbContext.Papers
+                    .Include(p => p.StarredEntity) // Ensure left join
+                    .AsQueryable(); 
+
+                // Apply ordering separately
+                IOrderedQueryable<PaperEntity> orderedQuery = orderByAscending
+                    ? query.OrderBy(x => x.Year)
+                    : query.OrderByDescending(x => x.Year);
+
+                // apply pagination
+                query = orderedQuery
+                    .Skip(offset)
+                    .Take(limit)
+                    .AsQueryable();
+
+                if (titleFilter)
+                    query = query.Where(x => (x.Title ?? "").Contains(search));
+                if (authroFilter)
+                    query = query.Where(x => (x.Authors ?? "").Contains(search));
+
+                if (yearFilter)
+                    query = query.Where(x => (x.Year ?? "").Contains(search));
+
+                if (publisherFilter)
+                    query = query.Where(x => (x.Publisher ?? "").Contains(search));
+
+                List<PaperEntity> papersFromDb= await query.ToListAsync().ConfigureAwait(false);
+
+
+                return ServiceResponse<List<PaperEntity>>.Success(papersFromDb, "Papers retrieved successfully");
+            }
+            catch (Exception ex)
+            {
+                return ServiceResponse<List<PaperEntity>>.Fail("An error occurred while retrieving papers", ex);
             }
         }
 

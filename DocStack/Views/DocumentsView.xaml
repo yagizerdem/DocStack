@@ -13,8 +13,83 @@
             <Setter Property="FontSize"
            Value="16"/>
         </Style>
+        <Style TargetType="CheckBox">
+            <Setter Property="Foreground" Value="White"></Setter>
+            <Setter Property="FontWeight" Value="Bold"></Setter>
+            <Setter Property="Margin" Value="20 0"></Setter>
+        </Style>
     </UserControl.Resources>
     <Grid Background="{StaticResource MatteBlackBrush}">
-        <TextBlock Text="{Binding test}"></TextBlock>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50"></RowDefinition>
+                <RowDefinition Height="50"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="120"></RowDefinition>
+            </Grid.RowDefinitions>
+
+            <StackPanel Orientation="Horizontal"
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Center">
+                <TextBox MinWidth="200" 
+                         MaxWidth="400"
+                         Height="30"
+                         Margin="50 0"
+                         Style="{StaticResource ModernTextBox}"
+                         VerticalAlignment="Center"
+                         VerticalContentAlignment="Center"
+                         Text="{Binding Query, Mode = TwoWay ,UpdateSourceTrigger=PropertyChanged}">
+                </TextBox>
+                <Border
+                    CornerRadius="5">
+                    <Button 
+                        Style="{StaticResource ModernButton2}"
+                        MinWidth="100"
+                        MaxWidth="250"
+                        Command="{Binding SearchCommand}">
+                        Search
+                    </Button>
+                </Border>
+                
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal" 
+                        HorizontalAlignment="Right"
+                        Grid.Row="1"
+                        VerticalAlignment="Center">
+                <CheckBox IsChecked="{Binding TitleFilter}">Title</CheckBox>
+                <CheckBox IsChecked="{Binding AuthorFilter}">Authors</CheckBox>
+                <CheckBox IsChecked="{Binding PublisherFilter}">Publisher</CheckBox>
+                <CheckBox IsChecked="{Binding YearFilter}">Year</CheckBox>
+            </StackPanel>
+
+            <Grid Grid.Row="2" 
+                  Background="{StaticResource JetBlackBrush}"
+                  Margin="40">
+            </Grid>
+            
+            <StackPanel Grid.Row="3"
+                        VerticalAlignment="Center">
+                <Border CornerRadius="5">
+                    <Button Style="{StaticResource ModernButton2}"
+                            Command="{Binding LoadMoreCommand}"
+                        Width="200"
+                        Height="40"
+                        Margin="20">
+                        Load More
+                    </Button>
+                </Border>
+                <Border CornerRadius="5">
+                    <Button Style="{StaticResource ModernButton3}"
+                            Command="{Binding ClearCommand}"
+                        Width="200"
+                        Height="40"
+                        Margin="20">
+                        Clear
+                    </Button>
+                </Border>
+            </StackPanel>
+            
+        </Grid>
     </Grid>
 </UserControl>

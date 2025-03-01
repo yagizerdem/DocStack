@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccess.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250301134820_mig1")]
+    [Migration("20250301170240_mig1")]
     partial class mig1
     {
         /// <inheritdoc />
@@ -51,6 +51,9 @@ namespace DataAccess.Migrations
                     b.Property<string>("Publisher")
                         .HasColumnType("TEXT");
 
+                    b.Property<Guid?>("StarredEntityId")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Title")
                         .HasColumnType("TEXT");
 
@@ -60,6 +63,45 @@ namespace DataAccess.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Papers");
+                });
+
+            modelBuilder.Entity("Models.Entity.StarredEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("Inserted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("LastUpdated")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid?>("PaperEntityId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PaperEntityId")
+                        .IsUnique();
+
+                    b.ToTable("StarredEntity");
+                });
+
+            modelBuilder.Entity("Models.Entity.StarredEntity", b =>
+                {
+                    b.HasOne("Models.Entity.PaperEntity", "PaperEntity")
+                        .WithOne("StarredEntity")
+                        .HasForeignKey("Models.Entity.StarredEntity", "PaperEntityId");
+
+                    b.Navigation("PaperEntity");
+                });
+
+            modelBuilder.Entity("Models.Entity.PaperEntity", b =>
+                {
+                    b.Navigation("StarredEntity");
                 });
 #pragma warning restore 612, 618
         }

@@ -67,10 +67,11 @@ namespace DocStack
             string dbPath = Path.Join(BasePath, "docstack.services.db");
             Environment.SetEnvironmentVariable("dbPath", dbPath, EnvironmentVariableTarget.Process);
 
-            if (!File.Exists(dbPath)) 
-            { 
-                File.Create(dbPath);
+            if (!File.Exists(dbPath))
+            {
+                using (File.Create(dbPath)) { } // Ensures the file stream is closed immediately
             }
+
 
         }
 

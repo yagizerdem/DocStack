@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Models.Entity;
+using System.Diagnostics.Metrics;
 using System.Runtime.CompilerServices;
 
 namespace DataAccess
@@ -39,6 +40,13 @@ namespace DataAccess
                 .Property(e => e.LastUpdated)
                 .HasDefaultValueSql("CURRENT_TIMESTAMP") // Set initial value
                 .ValueGeneratedOnAddOrUpdate(); // Auto-update on modifications
+
+
+            modelBuilder.Entity<PaperEntity>()
+            .HasOne(a => a.StarredEntity)
+            .WithOne(a => a.PaperEntity)
+            .HasForeignKey<StarredEntity>(c => c.PaperEntityId);
+
         }
 
     }

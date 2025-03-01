@@ -20,12 +20,12 @@ namespace DocStack.ViewModels
 
         public string test { get; set; }
 
-        public ICommand NavigateHomePanel { get; set; }
-        public ICommand NavigateSearchPanel { get; set; }
-        public ICommand NavigateFavouritesPanel { get; set; }
-        public ICommand NavigateMyPapersPanel { get; set; }
-        public ICommand NavigateSettingsPanel { get; set; }
-        public ICommand NavigateDocumentsPanel { get; set; }
+        public RelayCommand<string> NavigateHomePanel { get; set; }
+        public RelayCommand<string> NavigateSearchPanel { get; set; }
+        public RelayCommand<string> NavigateFavouritesPanel { get; set; }
+        public RelayCommand<string> NavigateMyPapersPanel { get; set; }
+        public RelayCommand<string> NavigateSettingsPanel { get; set; }
+        public RelayCommand<string> NavigateDocumentsPanel { get; set; }
 
 
         private BaseViewModel _currentViewModel;
@@ -36,6 +36,12 @@ namespace DocStack.ViewModels
             {
                 _currentViewModel = value;
                 OnPropertyChanged(nameof(CurrentViewModel));
+                NavigateHomePanel.RaiseCanExecuteChanged();
+                NavigateSearchPanel.RaiseCanExecuteChanged();
+                NavigateMyPapersPanel.RaiseCanExecuteChanged();
+                NavigateSettingsPanel.RaiseCanExecuteChanged();
+                NavigateDocumentsPanel.RaiseCanExecuteChanged();
+                NavigateFavouritesPanel.RaiseCanExecuteChanged();
             }
         }
 
@@ -64,7 +70,7 @@ namespace DocStack.ViewModels
                 (_) => CurrentViewModel != _documentsViewModel);
 
 
-            NavigateDocumentsPanel.Execute(null);
+            _currentViewModel = _documentsViewModel;
         }
         
 
