@@ -8,10 +8,24 @@ namespace DataAccess
     {
 
         public DbSet<WorkEntity> Works { get; set; }
-        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
+        public AppDbContext()
         {
         }
-    
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            // Retrieve the database path from an environment variable
+            string dbPath = Environment.GetEnvironmentVariable("dbPath", EnvironmentVariableTarget.Process);
+
+            if (string.IsNullOrEmpty(dbPath))
+            {
+                string documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                dbPath = Path.Combine(documentsPath, "docstack.services.db");
+            }
+
+            optionsBuilder.UseSqlite($"Data Source={dbPath}");
+        }
+
 
     }
 }

@@ -47,9 +47,7 @@ namespace DocStack
             ServiceCollection services = new();
 
             string path = Environment.GetEnvironmentVariable("dbPath")!;
-            services.AddDbContext<AppDbContext>(options =>
-               options.UseSqlite($"Data Source={path}"));
-            
+            services.AddSingleton<AppDbContext>();
             services.AddSingleton<NetworkService>();
 
             ServiceProvider = services.BuildServiceProvider();
