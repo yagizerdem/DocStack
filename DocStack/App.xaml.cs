@@ -57,6 +57,7 @@ namespace DocStack
             services.AddSingleton<AppDbContext>();
             services.AddSingleton<NetworkService>();
             services.AddSingleton<PaperService>();
+            services.AddSingleton<StarredService>();
 
             ServiceProvider = services.BuildServiceProvider();
         }

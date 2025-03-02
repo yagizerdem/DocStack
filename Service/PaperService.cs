@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Service
@@ -68,16 +69,12 @@ namespace Service
                     .Take(limit)
                     .AsQueryable();
 
-                if (titleFilter)
-                    query = query.Where(x => (x.Title ?? "").Contains(search));
-                if (authroFilter)
-                    query = query.Where(x => (x.Authors ?? "").Contains(search));
-
-                if (yearFilter)
-                    query = query.Where(x => (x.Year ?? "").Contains(search));
-
-                if (publisherFilter)
-                    query = query.Where(x => (x.Publisher ?? "").Contains(search));
+                query = query.Where(x =>
+                    (titleFilter && (x.Title ?? "").ToLower().Contains(search.ToLower())) ||
+                    (authroFilter && (x.Authors ?? "").ToLower().Contains(search.ToLower())) ||
+                    (yearFilter && (x.Year ?? "").ToLower().Contains(search.ToLower())) ||
+                    (publisherFilter && (x.Publisher ?? "").ToLower().Contains(search.ToLower()))
+                );
 
                 List<PaperEntity> papersFromDb= await query.ToListAsync().ConfigureAwait(false);
 
@@ -90,5 +87,32 @@ namespace Service
             }
         }
 
+
+        public async Task<ServiceResponse<PaperEntity>> GetById(Guid paperId)
+        {
+            if (!isValidGUID(paperId.ToString()))
+            {
+                return ServiceResponse<PaperEntity>.Fail("guid is invalid");
+            }
+            try
+            {
+                PaperEntity? paperFromDb = await _appDbContext.Papers.FirstOrDefaultAsync(x => x.Id == paperId);
+                return ServiceResponse<PaperEntity>.Success(paperFromDb);
+            }
+            catch (Exception ex)
+            {
+                return ServiceResponse<PaperEntity>.Fail(ex.Message, ex);
+            }
+        }
+
+        public static bool isValidGUID(string str)
+        {
+            string strRegex = @"^[{]?[0-9a-fA-F]{8}-([0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}[}]?$";
+            Regex re = new Regex(strRegex);
+            if (re.IsMatch(str))
+                return (true);
+            else
+                return (false);
+        }
     }
 }

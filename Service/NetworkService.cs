@@ -172,5 +172,26 @@ namespace Service
             }
         }
 
+        public async Task<bool> CheckDOIExists(string doi)
+        {
+            string url = $"https://api.crossref.org/works/{doi}";
+
+            using (HttpClient client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Add("Accept", "application/json");
+
+                try
+                {
+                    HttpResponseMessage response = await client.GetAsync(url);
+                    return response.IsSuccessStatusCode;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error: {ex.Message}");
+                    return false;
+                }
+            }
+        }
+
     }
 }

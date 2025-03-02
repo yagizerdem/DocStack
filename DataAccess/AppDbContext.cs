@@ -10,6 +10,8 @@ namespace DataAccess
     {
 
         public DbSet<PaperEntity> Papers { get; set; }
+
+        public DbSet<StarredEntity> Starred { get; set; }
         public AppDbContext()
         {
         }
@@ -37,6 +39,16 @@ namespace DataAccess
                 .HasDefaultValueSql("CURRENT_TIMESTAMP"); // Default timestamp when row is inserted
 
             modelBuilder.Entity<PaperEntity>()
+                .Property(e => e.LastUpdated)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP") // Set initial value
+                .ValueGeneratedOnAddOrUpdate(); // Auto-update on modifications
+
+
+            modelBuilder.Entity<StarredEntity>()
+                .Property(e => e.Inserted)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP"); // Default timestamp when row is inserted
+
+            modelBuilder.Entity<StarredEntity>()
                 .Property(e => e.LastUpdated)
                 .HasDefaultValueSql("CURRENT_TIMESTAMP") // Set initial value
                 .ValueGeneratedOnAddOrUpdate(); // Auto-update on modifications

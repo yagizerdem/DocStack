@@ -5,7 +5,10 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:DocStack.Views"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="450" d:DesignWidth="800"
+             xmlns:entity="clr-namespace:Models.Entity;assembly=Models"
+             xmlns:converters="clr-namespace:DocStack.Converters" >
+    
     <UserControl.Resources>
         <Style  TargetType="TextBlock">
             <Setter Property="Foreground"
@@ -13,17 +16,103 @@
             <Setter Property="FontSize"
            Value="16"/>
         </Style>
+       
         <Style TargetType="CheckBox">
             <Setter Property="Foreground" Value="White"></Setter>
             <Setter Property="FontWeight" Value="Bold"></Setter>
             <Setter Property="Margin" Value="20 0"></Setter>
         </Style>
+
+        <Style TargetType="Border" x:Key="StylishBorder">
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="10"/>
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="Background" Value="#222"/>
+            <Setter Property="BorderBrush" Value="#444"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect Color="Black" BlurRadius="5" ShadowDepth="2"/>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Background" Value="#222"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#333"/>
+                    <Setter Property="BorderBrush" Value="#666"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="ButtonFocusVisual">
+            <Setter Property="Control.Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Rectangle Margin="2" SnapsToDevicePixels="true" Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" StrokeThickness="1" StrokeDashArray="1 2"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <LinearGradientBrush x:Key="ButtonNormalBackground" EndPoint="0,1" StartPoint="0,0">
+            <GradientStop Color="#F3F3F3" Offset="0"/>
+            <GradientStop Color="#EBEBEB" Offset="0.5"/>
+            <GradientStop Color="#DDDDDD" Offset="0.5"/>
+            <GradientStop Color="#CDCDCD" Offset="1"/>
+        </LinearGradientBrush>
+        <SolidColorBrush x:Key="ButtonNormalBorder" Color="#FF707070"/>
+        <Style x:Key="ToggleButtonStyle1" TargetType="{x:Type ToggleButton}">
+            <Setter Property="FocusVisualStyle" Value="{StaticResource ButtonFocusVisual}"/>
+            <Setter Property="Background" Value="{StaticResource ButtonNormalBackground}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource ButtonNormalBorder}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Padding" Value="1"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ToggleButton}">
+                        <StackPanel Orientation="Horizontal">
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                            <Border x:Name="on" Width="100" Height="25" Background="LightGray" CornerRadius="2,0,0,4" Margin="10,0,0,0">
+                                <TextBlock x:Name="onText" Text="Ascending" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                            <Border x:Name="off" Width="100" Height="25" Background="LightGray" CornerRadius="0,2,4,0">
+                                <TextBlock x:Name="offText" Text="Descanding" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                        </StackPanel>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsEnabled" Value="false">
+                                <Setter Property="Foreground" Value="#ADADAD"/>
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="true">
+                                <Setter TargetName="on" Property="Background" Value="LightBlue"/>
+                                <Setter TargetName="onText" Property="Foreground" Value="White"/>
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="False">
+                                <Setter TargetName="off" Property="Background" Value="LightBlue"/>
+                                <Setter TargetName="offText" Property="Foreground" Value="White"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+
+        <entity:PaperEntity x:Key="PaperEntity"></entity:PaperEntity>
+        <converters:StarredEntityToVisibilityConverter x:Key="StarredEntityToVisibilityConverter"></converters:StarredEntityToVisibilityConverter>
+        <converters:StarredEntityToInverseVisibilityConverter x:Key="StarredEntityToInverseVisibilityConverter"></converters:StarredEntityToInverseVisibilityConverter>
+        <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"></converters:BooleanToVisibilityConverter>
+
     </UserControl.Resources>
     <Grid Background="{StaticResource MatteBlackBrush}">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="50"></RowDefinition>
                 <RowDefinition Height="50"></RowDefinition>
+                <RowDefinition Height="50"></RowDefinition>
+                <RowDefinition Height="30"></RowDefinition>
                 <RowDefinition Height="*"></RowDefinition>
                 <RowDefinition Height="120"></RowDefinition>
             </Grid.RowDefinitions>
@@ -38,7 +127,8 @@
                          Style="{StaticResource ModernTextBox}"
                          VerticalAlignment="Center"
                          VerticalContentAlignment="Center"
-                         Text="{Binding Query, Mode = TwoWay ,UpdateSourceTrigger=PropertyChanged}">
+                         Text="{Binding Query, Mode = TwoWay ,UpdateSourceTrigger=PropertyChanged}"
+                         KeyDown="TextBox_KeyDown">
                 </TextBox>
                 <Border
                     CornerRadius="5">
@@ -63,12 +153,299 @@
                 <CheckBox IsChecked="{Binding YearFilter}">Year</CheckBox>
             </StackPanel>
 
-            <Grid Grid.Row="2" 
+            <StackPanel Orientation="Horizontal" 
+                        Grid.Row="2"
+                        HorizontalAlignment="Right"
+                        Margin="20 0 ">
+                <ToggleButton 
+                    Foreground="White"
+                    FontWeight="Bold"
+                    Content="Sort " 
+                    Style="{StaticResource ToggleButtonStyle1}"
+                    IsChecked="{Binding SortAscending, Mode=TwoWay , UpdateSourceTrigger=PropertyChanged}"
+                    />
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal" 
+                    Grid.Row="3"
+                    HorizontalAlignment="Right"
+                    Margin="20 0 ">
+                <CheckBox IsChecked="{Binding IsListView, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></CheckBox>
+            </StackPanel>
+
+            <Grid Grid.Row="4" 
                   Background="{StaticResource JetBlackBrush}"
-                  Margin="40">
+                  Margin="40"
+                  Visibility="{Binding IsListView, Converter={StaticResource BooleanToVisibilityConverter}}">
+                
+                <ListView ItemsSource="{Binding PaperEntities}"
+          Background="Transparent"
+          BorderThickness="0"
+          HorizontalContentAlignment="Stretch"
+          ScrollViewer.VerticalScrollBarVisibility="Auto">
+
+                    <ListView.ItemTemplate>
+                        <DataTemplate DataType="{x:Type entity:PaperEntity}">
+                            <Border Style="{StaticResource StylishBorder}">
+                                <Grid Margin="10">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+
+                                    <!-- Title -->
+                                    <TextBlock Grid.Row="0"
+                               Text="{Binding Title}"
+                               FontSize="18"
+                               FontWeight="Bold"
+                               Foreground="White"
+                               TextWrapping="Wrap"
+                               MaxWidth="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=ListView}}"/>
+
+                                    <!-- Authors (Replaced StackPanel with Grid) -->
+                                    <Grid Grid.Row="1" Margin="0,5,0,0">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <!-- Ensures wrapping -->
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" 
+                                   Text="Authors: " 
+                                   Foreground="LightGray" 
+                                   FontWeight="Bold"/>
+                                        <TextBlock Grid.Column="1"
+                                   Text="{Binding Authors}"
+                                   Foreground="White"
+                                   TextWrapping="Wrap"
+                                   MaxWidth="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=ListView}}"/>
+                                    </Grid>
+
+                                    <Grid Grid.Row="2" Margin="0,5,0,0">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <!-- Label column -->
+                                            <ColumnDefinition Width="*" />
+                                            <!-- Content column -->
+                                            <ColumnDefinition Width="Auto"/>
+                                            <!-- Second Label column -->
+                                            <ColumnDefinition Width="*" />
+                                            <!-- Second Content column -->
+                                        </Grid.ColumnDefinitions>
+
+                                        <!-- Publisher Label -->
+                                        <TextBlock Grid.Row="0" Grid.Column="0" 
+               Text="Publisher: " 
+               Foreground="LightGray" 
+               FontWeight="Bold"/>
+
+                                        <!-- Publisher Value -->
+                                        <TextBlock Grid.Row="0" Grid.Column="1"
+               Text="{Binding Publisher}"
+               Foreground="White"
+               Margin="0,0,10,0"
+               TextWrapping="Wrap"
+               MaxWidth="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=ListView}}"/>
+
+                                        <!-- Year Label -->
+                                        <TextBlock Grid.Row="0" Grid.Column="2" 
+               Text="Year: " 
+               Foreground="LightGray" 
+               FontWeight="Bold"
+               Margin="10,0,0,0"/>
+
+                                        <!-- Year Value -->
+                                        <TextBlock Grid.Row="0" Grid.Column="3" 
+               Text="{Binding Year}" 
+               Foreground="White"
+               TextWrapping="Wrap"/>
+                                    </Grid>
+
+
+                                    <Button Grid.Row="3"
+                                            Style="{StaticResource ModernButton2}"
+                                            Visibility="{Binding StarredEntity, Converter={StaticResource StarredEntityToInverseVisibilityConverter}}"
+                                            Width="100"
+                                            Margin="20"
+                                            Height="35"
+                                            HorizontalAlignment="Left"
+                                            Command="{Binding DataContext.AddToStarredCommand, RelativeSource={RelativeSource AncestorType=ListView}}"
+                                            CommandParameter="{Binding Id}">
+                                        Add Starred
+                                    </Button>
+
+                                    <Button Grid.Row="3"
+                                    Style="{StaticResource ModernButton3}"
+                                            Visibility="{Binding StarredEntity, Converter={StaticResource StarredEntityToVisibilityConverter}}"
+                                    Width="150"
+                                    Margin="20"
+                                    Height="35"
+                                    HorizontalAlignment="Left"
+                                    Command="{Binding DataContext.RemoveStarredCommand, RelativeSource={RelativeSource AncestorType=ListView}}"
+                                    CommandParameter="{Binding Id}">
+                                        >
+                                        Remove Starred
+                                    </Button>
+
+                                    <Button Grid.Row="4"
+                                            Width="200" 
+                                            Height="30"
+                                            Style="{StaticResource ModernButton}"
+                                            Command="{Binding DataContext.OpenInBrowserCommand, 
+                                        RelativeSource={RelativeSource AncestorType=ListView}}"
+                                            CommandParameter="{Binding Id}">
+                                        Open Pdf In Browser
+                                    </Button>
+                                    
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+
+                    <ListView.Resources>
+                        <Style TargetType="{x:Type ScrollBar}" BasedOn="{StaticResource ModernScrollBar}"/>
+
+                        <Style TargetType="ListViewItem">
+                            <Setter Property="Background" Value="Transparent"/>
+                            <Setter Property="BorderThickness" Value="0"/>
+                            <Setter Property="Padding" Value="5"/>
+                            <Setter Property="Margin" Value="5"/>
+                            <Style.Triggers>
+                                <!-- Remove default hover effect -->
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="Transparent"/>
+                                    <!-- No hover color -->
+                                </Trigger>
+
+                                <!-- Remove default selection effect -->
+                                <Trigger Property="IsSelected" Value="True">
+                                    <Setter Property="Background" Value="Transparent"/>
+                                    <!-- No selection color -->
+                                    <Setter Property="BorderBrush" Value="Transparent"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ListView.Resources>
+
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListBoxItem">
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                        </Style>
+                    </ListView.ItemContainerStyle>
+                </ListView>
             </Grid>
-            
-            <StackPanel Grid.Row="3"
+
+
+            <Grid Grid.Row="4" 
+         Background="{StaticResource JetBlackBrush}"
+         Margin="40"
+         Visibility="{Binding IsGridView, Converter={StaticResource BooleanToVisibilityConverter}}">
+
+                <ScrollViewer VerticalScrollBarVisibility="Auto"
+              Background="Transparent">
+                    <ItemsControl ItemsSource="{Binding PaperEntities}">
+                        <!-- Use WrapPanel to create tile layout -->
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel IsItemsHost="True" Orientation="Horizontal" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Style="{StaticResource StylishBorder}" 
+                        Margin="10"
+                        Padding="10"
+                        Width="250"
+                        Height="Auto">
+
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+
+                                        <!-- Title -->
+                                        <TextBlock Grid.Row="0"
+                                   Text="{Binding Title}"
+                                   FontSize="16"
+                                   FontWeight="Bold"
+                                   Foreground="White"
+                                   TextWrapping="Wrap"
+                                   MaxWidth="230" />
+
+                                        <!-- Authors -->
+                                        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,5,0,0">
+                                            <TextBlock Text="Authors: " Foreground="LightGray" FontWeight="Bold"/>
+                                            <TextBlock Text="{Binding Authors}" Foreground="White" TextWrapping="Wrap" />
+                                        </StackPanel>
+
+                                        <!-- Publisher & Year -->
+                                        <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,5,0,0">
+                                            <TextBlock Text="Publisher: " Foreground="LightGray" FontWeight="Bold"/>
+                                            <TextBlock Text="{Binding Publisher}" Foreground="White" />
+                                        </StackPanel>
+
+                                        <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="0,5,0,0">
+                                            <TextBlock Text="Year: " Foreground="LightGray" FontWeight="Bold"/>
+                                            <TextBlock Text="{Binding Year}" Foreground="White" />
+                                        </StackPanel>
+
+                                        <!-- Action Buttons -->
+                                        <StackPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,0">
+                                            <!-- Add Starred Button -->
+                                            <Button Style="{StaticResource ModernButton2}"
+                                    Visibility="{Binding StarredEntity, Converter={StaticResource StarredEntityToInverseVisibilityConverter}}"
+                                    Width="100"
+                                    Height="30"
+                                    Command="{Binding DataContext.AddToStarredCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                    CommandParameter="{Binding Id}">
+                                                Star
+                                            </Button>
+
+                                            <!-- Remove Starred Button -->
+                                            <Button Style="{StaticResource ModernButton3}"
+                                    Visibility="{Binding StarredEntity, Converter={StaticResource StarredEntityToVisibilityConverter}}"
+                                    Width="100"
+                                    Height="30"
+                                    Command="{Binding DataContext.RemoveStarredCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                    CommandParameter="{Binding Id}">
+                                                Unstar
+                                            </Button>
+                                        </StackPanel>
+
+                                        <!-- Open PDF Button -->
+                                        <Button Grid.Row="5"
+                                Width="200"
+                                Height="30"
+                                Margin="10,5,0,0"
+                                Style="{StaticResource ModernButton}"
+                                Command="{Binding DataContext.OpenInBrowserCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                CommandParameter="{Binding Id}">
+                                            Open PDF
+                                        </Button>
+
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+
+            </Grid>
+
+
+            <StackPanel Grid.Row="5"
                         VerticalAlignment="Center">
                 <Border CornerRadius="5">
                     <Button Style="{StaticResource ModernButton2}"
