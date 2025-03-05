@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Service
@@ -28,6 +29,8 @@ namespace Service
 
             try
             {
+                await _appDbContext._semaphore.WaitAsync();
+
                 await _appDbContext.Papers.AddAsync(paper).ConfigureAwait(false);
                 await _appDbContext.SaveChangesAsync().ConfigureAwait(false);
 
@@ -36,6 +39,10 @@ namespace Service
             catch (Exception ex)
             {
                 return ServiceResponse<PaperEntity>.Fail("An error occurred while adding the paper", ex);
+            }
+            finally
+            {
+                _appDbContext._semaphore.Release();
             }
         }
 
@@ -51,6 +58,7 @@ namespace Service
         {
             try
             {
+                await _appDbContext._semaphore.WaitAsync();
 
                 if (string.IsNullOrEmpty(search)) search = "";
 
@@ -85,6 +93,10 @@ namespace Service
             {
                 return ServiceResponse<List<PaperEntity>>.Fail("An error occurred while retrieving papers", ex);
             }
+            finally
+            {
+                _appDbContext._semaphore.Release();
+            }
         }
 
 
@@ -96,6 +108,7 @@ namespace Service
             }
             try
             {
+                await _appDbContext._semaphore.WaitAsync();
                 PaperEntity? paperFromDb = await _appDbContext.Papers.FirstOrDefaultAsync(x => x.Id == paperId);
                 return ServiceResponse<PaperEntity>.Success(paperFromDb);
             }
@@ -103,8 +116,46 @@ namespace Service
             {
                 return ServiceResponse<PaperEntity>.Fail(ex.Message, ex);
             }
+            finally
+            {
+                _appDbContext._semaphore.Release();
+            }
         }
 
+        public async Task<ServiceResponse<PaperEntity>> DeleteById(Guid paperId)
+        {
+            if (!isValidGUID(paperId.ToString()))
+            {
+                return ServiceResponse<PaperEntity>.Fail("guid is invalid");
+            }
+            try
+            {
+                await _appDbContext._semaphore.WaitAsync();
+                PaperEntity? paperFromDb = await _appDbContext.Papers.FirstOrDefaultAsync(x => x.Id == paperId);
+                if(paperFromDb == null) throw new Exception($"papaer with id {paperId} not exist");
+
+                // remove from starred
+                StarredEntity? starred = await _appDbContext.Starred.FirstOrDefaultAsync(x => x.PaperEntityId == paperId);
+
+                if(starred != null)
+                {
+                    _appDbContext.Starred.Remove(starred);  
+                }
+
+                _appDbContext.Papers.Remove(paperFromDb);
+                await _appDbContext.SaveChangesAsync();
+
+                return ServiceResponse<PaperEntity>.Success(paperFromDb);
+            }
+            catch (Exception ex)
+            {
+                return ServiceResponse<PaperEntity>.Fail(ex.Message, ex);
+            }
+            finally
+            {
+                _appDbContext._semaphore.Release();
+            }
+        }
         public static bool isValidGUID(string str)
         {
             string strRegex = @"^[{]?[0-9a-fA-F]{8}-([0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}[}]?$";

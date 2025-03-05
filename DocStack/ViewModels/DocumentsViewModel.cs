@@ -143,6 +143,8 @@ namespace DocStack.ViewModels
 
         public RelayCommand<Guid> OpenInBrowserCommand { get; set; }
 
+        public RelayCommand<Guid> DeletePaperCommand { get; set; }
+
         private PaperService _paperService;
         private StarredService _starredServcie;
         private NetworkService _networkService;
@@ -155,6 +157,7 @@ namespace DocStack.ViewModels
             AddToStarredCommand = new RelayCommand<Guid>(async (paperId) => await AddToStarred(paperId));
             RemoveStarredCommand  = new RelayCommand<Guid>(async (paperId) => await RemoveStarred(paperId));
             OpenInBrowserCommand = new RelayCommand<Guid>(async (paperId) => await OpenInBrowser(paperId));
+            DeletePaperCommand = new RelayCommand<Guid>(async (paperId) => await DeletePaper(paperId));
 
             _paperService = App.ServiceProvider.GetRequiredService<PaperService>();
             _starredServcie = App.ServiceProvider.GetRequiredService<StarredService>();
@@ -333,6 +336,27 @@ namespace DocStack.ViewModels
             else
             {
                 Toaster.ShowError($"document object identifier is invalid");
+            }
+        }
+
+        public async Task DeletePaper(Guid paperId)
+        {
+            try
+            {
+                var response = await _paperService.DeleteById(paperId);
+                if (!response.Ok) throw response.Exception;
+               
+                var paperToRemove = PaperEntities.FirstOrDefault(x => x.Id == paperId);
+                if (paperToRemove != null)
+                {
+                    PaperEntities.Remove(paperToRemove);
+                }
+                Toaster.ShowSuccess(response.Message);
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);  
+                Toaster.ShowError(ex.Message);   
             }
         }
 

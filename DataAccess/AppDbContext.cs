@@ -12,6 +12,12 @@ namespace DataAccess
         public DbSet<PaperEntity> Papers { get; set; }
 
         public DbSet<StarredEntity> Starred { get; set; }
+
+        public DbSet<MyDocuments> MyDocuments { get; set; }
+
+        // ensure 1 thread can use db context 
+        public SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1);
+
         public AppDbContext()
         {
         }
@@ -49,6 +55,15 @@ namespace DataAccess
                 .HasDefaultValueSql("CURRENT_TIMESTAMP"); // Default timestamp when row is inserted
 
             modelBuilder.Entity<StarredEntity>()
+                .Property(e => e.LastUpdated)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP") // Set initial value
+                .ValueGeneratedOnAddOrUpdate(); // Auto-update on modifications
+
+            modelBuilder.Entity<MyDocuments>()
+    .Property(e => e.Inserted)
+    .HasDefaultValueSql("CURRENT_TIMESTAMP"); // Default timestamp when row is inserted
+
+            modelBuilder.Entity<MyDocuments>()
                 .Property(e => e.LastUpdated)
                 .HasDefaultValueSql("CURRENT_TIMESTAMP") // Set initial value
                 .ValueGeneratedOnAddOrUpdate(); // Auto-update on modifications

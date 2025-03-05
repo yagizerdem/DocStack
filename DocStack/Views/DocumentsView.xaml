@@ -187,124 +187,139 @@
                     <ListView.ItemTemplate>
                         <DataTemplate DataType="{x:Type entity:PaperEntity}">
                             <Border Style="{StaticResource StylishBorder}">
-                                <Grid Margin="10">
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="Auto"/>
-                                    </Grid.RowDefinitions>
-
-                                    <!-- Title -->
-                                    <TextBlock Grid.Row="0"
-                               Text="{Binding Title}"
-                               FontSize="18"
-                               FontWeight="Bold"
-                               Foreground="White"
-                               TextWrapping="Wrap"
-                               MaxWidth="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=ListView}}"/>
-
-                                    <!-- Authors (Replaced StackPanel with Grid) -->
-                                    <Grid Grid.Row="1" Margin="0,5,0,0">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto"/>
-                                            <ColumnDefinition Width="Auto"/>
-                                            <ColumnDefinition Width="Auto"/>
-                                            <!-- Ensures wrapping -->
-                                        </Grid.ColumnDefinitions>
-                                        <TextBlock Grid.Column="0" 
-                                   Text="Authors: " 
-                                   Foreground="LightGray" 
-                                   FontWeight="Bold"/>
-                                        <TextBlock Grid.Column="1"
-                                   Text="{Binding Authors}"
-                                   Foreground="White"
-                                   TextWrapping="Wrap"
-                                   MaxWidth="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=ListView}}"/>
-                                    </Grid>
-
-                                    <Grid Grid.Row="2" Margin="0,5,0,0">
+                                <StackPanel Orientation="Horizontal"
+                                            HorizontalAlignment="Stretch">
+                                    <Grid Margin="10">
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="Auto"/>
                                             <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
                                         </Grid.RowDefinitions>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto"/>
-                                            <!-- Label column -->
-                                            <ColumnDefinition Width="*" />
-                                            <!-- Content column -->
-                                            <ColumnDefinition Width="Auto"/>
-                                            <!-- Second Label column -->
-                                            <ColumnDefinition Width="*" />
-                                            <!-- Second Content column -->
-                                        </Grid.ColumnDefinitions>
 
-                                        <!-- Publisher Label -->
-                                        <TextBlock Grid.Row="0" Grid.Column="0" 
-               Text="Publisher: " 
-               Foreground="LightGray" 
-               FontWeight="Bold"/>
+                                        <!-- Title -->
+                                        <TextBlock Grid.Row="0"
+                Text="{Binding Title}"
+                FontSize="18"
+                FontWeight="Bold"
+                Foreground="White"
+                TextWrapping="Wrap"
+                MaxWidth="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=ListView}}"/>
 
-                                        <!-- Publisher Value -->
-                                        <TextBlock Grid.Row="0" Grid.Column="1"
-               Text="{Binding Publisher}"
-               Foreground="White"
-               Margin="0,0,10,0"
-               TextWrapping="Wrap"
-               MaxWidth="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=ListView}}"/>
+                                        <!-- Authors (Replaced StackPanel with Grid) -->
+                                        <Grid Grid.Row="1" Margin="0,5,0,0">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <!-- Ensures wrapping -->
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Grid.Column="0" 
+                    Text="Authors: " 
+                    Foreground="LightGray" 
+                    FontWeight="Bold"/>
+                                            <TextBlock Grid.Column="1"
+                    Text="{Binding Authors}"
+                    Foreground="White"
+                    TextWrapping="Wrap"
+                    MaxWidth="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=ListView}}"/>
+                                        </Grid>
 
-                                        <!-- Year Label -->
-                                        <TextBlock Grid.Row="0" Grid.Column="2" 
-               Text="Year: " 
-               Foreground="LightGray" 
-               FontWeight="Bold"
-               Margin="10,0,0,0"/>
+                                        <Grid Grid.Row="2" Margin="0,5,0,0">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <!-- Label column -->
+                                                <ColumnDefinition Width="*" />
+                                                <!-- Content column -->
+                                                <ColumnDefinition Width="Auto"/>
+                                                <!-- Second Label column -->
+                                                <ColumnDefinition Width="*" />
+                                                <!-- Second Content column -->
+                                            </Grid.ColumnDefinitions>
 
-                                        <!-- Year Value -->
-                                        <TextBlock Grid.Row="0" Grid.Column="3" 
-               Text="{Binding Year}" 
-               Foreground="White"
-               TextWrapping="Wrap"/>
+                                            <!-- Publisher Label -->
+                                            <TextBlock Grid.Row="0" Grid.Column="0" 
+Text="Publisher: " 
+Foreground="LightGray" 
+FontWeight="Bold"/>
+
+                                            <!-- Publisher Value -->
+                                            <TextBlock Grid.Row="0" Grid.Column="1"
+Text="{Binding Publisher}"
+Foreground="White"
+Margin="0,0,10,0"
+TextWrapping="Wrap"
+MaxWidth="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=ListView}}"/>
+
+                                            <!-- Year Label -->
+                                            <TextBlock Grid.Row="0" Grid.Column="2" 
+Text="Year: " 
+Foreground="LightGray" 
+FontWeight="Bold"
+Margin="10,0,0,0"/>
+
+                                            <!-- Year Value -->
+                                            <TextBlock Grid.Row="0" Grid.Column="3" 
+Text="{Binding Year}" 
+Foreground="White"
+TextWrapping="Wrap"/>
+                                        </Grid>
+
+
+                                        <Button Grid.Row="3"
+                             Style="{StaticResource ModernButton2}"
+                             Visibility="{Binding StarredEntity, Converter={StaticResource StarredEntityToInverseVisibilityConverter}}"
+                             Width="100"
+                             Margin="20"
+                             Height="35"
+                             HorizontalAlignment="Left"
+                             Command="{Binding DataContext.AddToStarredCommand, RelativeSource={RelativeSource AncestorType=ListView}}"
+                             CommandParameter="{Binding Id}">
+                                            Add Starred
+                                        </Button>
+
+                                        <Button Grid.Row="3"
+                     Style="{StaticResource ModernButton3}"
+                             Visibility="{Binding StarredEntity, Converter={StaticResource StarredEntityToVisibilityConverter}}"
+                     Width="150"
+                     Margin="20"
+                     Height="35"
+                     HorizontalAlignment="Left"
+                     Command="{Binding DataContext.RemoveStarredCommand, RelativeSource={RelativeSource AncestorType=ListView}}"
+                     CommandParameter="{Binding Id}">
+                                            >
+                         Remove Starred
+                                        </Button>
+
+                                        <Button Grid.Row="4"
+                             Width="200" 
+                             Height="30"
+                             Style="{StaticResource ModernButton}"
+                             Command="{Binding DataContext.OpenInBrowserCommand, 
+                         RelativeSource={RelativeSource AncestorType=ListView}}"
+                             CommandParameter="{Binding Id}">
+                                            Open Pdf In Browser
+                                        </Button>
+
                                     </Grid>
 
-
-                                    <Button Grid.Row="3"
-                                            Style="{StaticResource ModernButton2}"
-                                            Visibility="{Binding StarredEntity, Converter={StaticResource StarredEntityToInverseVisibilityConverter}}"
-                                            Width="100"
-                                            Margin="20"
+                                    <Button Content="Delete"
+                                            Width="80"
                                             Height="35"
-                                            HorizontalAlignment="Left"
-                                            Command="{Binding DataContext.AddToStarredCommand, RelativeSource={RelativeSource AncestorType=ListView}}"
-                                            CommandParameter="{Binding Id}">
-                                        Add Starred
-                                    </Button>
+                                            Margin="10"
+                                            HorizontalAlignment="Right"
+                                            Cursor="Hand"
+                                            Command="{Binding DataContext.DeletePaperCommand, RelativeSource={RelativeSource AncestorType=ListView}}"
+                                            CommandParameter="{Binding Id}"
+                                            />
 
-                                    <Button Grid.Row="3"
-                                    Style="{StaticResource ModernButton3}"
-                                            Visibility="{Binding StarredEntity, Converter={StaticResource StarredEntityToVisibilityConverter}}"
-                                    Width="150"
-                                    Margin="20"
-                                    Height="35"
-                                    HorizontalAlignment="Left"
-                                    Command="{Binding DataContext.RemoveStarredCommand, RelativeSource={RelativeSource AncestorType=ListView}}"
-                                    CommandParameter="{Binding Id}">
-                                        >
-                                        Remove Starred
-                                    </Button>
-
-                                    <Button Grid.Row="4"
-                                            Width="200" 
-                                            Height="30"
-                                            Style="{StaticResource ModernButton}"
-                                            Command="{Binding DataContext.OpenInBrowserCommand, 
-                                        RelativeSource={RelativeSource AncestorType=ListView}}"
-                                            CommandParameter="{Binding Id}">
-                                        Open Pdf In Browser
-                                    </Button>
-                                    
-                                </Grid>
+                                    </StackPanel>
+                         
                             </Border>
                         </DataTemplate>
                     </ListView.ItemTemplate>
@@ -373,6 +388,8 @@
                                             <RowDefinition Height="Auto"/>
                                             <RowDefinition Height="Auto"/>
                                             <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
                                         </Grid.RowDefinitions>
 
                                         <!-- Title -->
@@ -435,7 +452,20 @@
                                             Open PDF
                                         </Button>
 
+
+                                        <!-- Delete Button -->
+                                        <Button Grid.Row="6"
+                                Width="150"
+                                Height="30"
+                                Margin="10,5,0,0"
+                                Style="{StaticResource ModernButton3}"
+                                Command="{Binding DataContext.DeletePaperCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                CommandParameter="{Binding Id}">
+                                            Delete Paper
+                                        </Button>
+
                                     </Grid>
+
                                 </Border>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>

@@ -92,4 +92,23 @@
     <SolidColorBrush x:Key="UltramarineBrush" Color="{StaticResource Ultramarine}"/>
     <SolidColorBrush x:Key="ZaffreBrush" Color="{StaticResource Zaffre}"/>
 
+
+    <!-- Modern Gray -->
+    <SolidColorBrush x:Key="ModernGrayBrush" Color="#FF2D2D2D" />
+
+    <!-- Modern Red -->
+    <SolidColorBrush x:Key="ModernRedBrush" Color="#FFFF4757" />
+
+    <!-- Modern Purple -->
+    <SolidColorBrush x:Key="ModernPurpleBrush" Color="#FF6C5CE7" />
+
+    <!-- Modern Blue -->
+    <SolidColorBrush x:Key="ModernBlueBrush" Color="#FF1E90FF" />
+
+    <!-- Modern Yellow -->
+    <SolidColorBrush x:Key="ModernYellowBrush" Color="#FFFFD700" />
+
+    <!-- Modern Green -->
+    <SolidColorBrush x:Key="ModernGreenBrush" Color="#FF2ED573" />
+
 </ResourceDictionary>

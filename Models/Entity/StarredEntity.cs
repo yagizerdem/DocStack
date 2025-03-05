@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Models.Enums;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Models.Entity
 {
@@ -12,6 +8,8 @@ namespace Models.Entity
 
         public Guid? PaperEntityId { get; set; }
         public PaperEntity? PaperEntity { get; set; }
+
+        public ColorFilters ColorFilter { get; set; }
 
     }
 }

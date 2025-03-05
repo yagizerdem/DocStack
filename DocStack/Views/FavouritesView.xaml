@@ -5,7 +5,14 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:DocStack.Views"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="450" d:DesignWidth="800"
+            xmlns:components="clr-namespace:DocStack.Components"
+            xmlns:converters="clr-namespace:DocStack.Converters"
+             xmlns:fa="http://schemas.fontawesome.io/icons/"
+             xmlns:utils="clr-namespace:DocStack.Utils"
+             >
+    
+    
     <UserControl.Resources>
         <Style  TargetType="TextBlock">
             <Setter Property="Foreground"
@@ -13,8 +20,504 @@
             <Setter Property="FontSize"
             Value="16"/>
         </Style>
+
+        <components:Spinner x:Key="Spinner"/>
+        <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <converters:ColorFilterToBrushConverter x:Key="ColorFilterToBrushConverter"/>
+        <converters:MultiParameterConverter x:Key="MultiParameterConverter"/>
+        
+        <Style TargetType="{x:Type ScrollBar}" BasedOn="{StaticResource ModernScrollBar}"/>
+
+        <utils:BindingProxy x:Key="Proxy" Data="{Binding}" />
+        
     </UserControl.Resources>
+    
     <Grid Background="{StaticResource MatteBlackBrush}">
-        <TextBlock>favourites View</TextBlock>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40"></RowDefinition>
+            <RowDefinition Height="40"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+        </Grid.RowDefinitions>
+
+        <components:Spinner 
+                Grid.Row="1"
+                Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="0.25*"/>
+                <!-- Left Spacer -->
+                <ColumnDefinition Width="0.4*"/>
+                <!-- 50% Width -->
+                <ColumnDefinition Width="0.25*"/>
+                <!-- Right Spacer -->
+            </Grid.ColumnDefinitions>
+
+            <Border CornerRadius="5" 
+                    BorderBrush="White"
+                            Grid.Column="1"
+        HorizontalAlignment="Stretch"
+        Height="30"
+                MaxWidth="400"
+                MinWidth="200"
+                    >
+                
+                <TextBox Style="{StaticResource ModernTextBox}" 
+                         VerticalContentAlignment="Center"
+                         FontWeight="Bold"
+                         Text="{Binding Query, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                         KeyDown="TextBox_KeyDown"
+                    />
+            </Border>
+
+            <Button Style="{StaticResource ModernButton2}"
+                    Grid.Column="3"
+                    Margin="50 0"
+                    MinWidth="80"
+                    MaxWidth="200"
+                    FontWeight="Bold"
+                    Command="{Binding SearchCommand}">
+                Search
+            </Button>
+        </Grid>
+
+        <StackPanel 
+            Grid.Row="1"
+            Orientation="Horizontal"
+            HorizontalAlignment="Stretch">
+            <Button Style="{StaticResource ModernButton4}"
+                    Width="100" 
+                    Margin="30 0"
+                    Command="{Binding ResetFilterCommand}">
+                Reset Filter
+            </Button>
+                <StackPanel 
+                    Orientation="Horizontal"
+                    Margin="10 0">
+                <TextBlock Text="Gray Filter" 
+                           VerticalAlignment="Center" 
+                           Margin="5,0,0,0"
+                           FontSize="10"/>
+                <CheckBox 
+            IsChecked="{Binding GrayFilter, UpdateSourceTrigger=PropertyChanged , Mode=TwoWay}"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Center"/>
+       
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal"
+                            Margin="10 0">
+                <TextBlock Text="Red Filter" 
+                               VerticalAlignment="Center" 
+                               Margin="5,0,0,0"
+                               FontSize="10"/>
+                <CheckBox 
+            IsChecked="{Binding RedFilter, UpdateSourceTrigger=PropertyChanged , Mode=TwoWay}"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Center"/>
+
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal"
+                            Margin="10 0">
+                <TextBlock 
+                        Text="Blue Filter" 
+                        VerticalAlignment="Center" 
+                        Margin="5,0,0,0"
+                        FontSize="10"/>
+
+                <CheckBox 
+            IsChecked="{Binding BlueFilter, UpdateSourceTrigger=PropertyChanged , Mode=TwoWay}"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Center"/>
+
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal"
+                            Margin="10 0">
+                <TextBlock Text="Green Filter" 
+                               VerticalAlignment="Center" 
+                               Margin="5,0,0,0"
+                               FontSize="10"/>
+                <CheckBox 
+            IsChecked="{Binding GreenFilter, UpdateSourceTrigger=PropertyChanged , Mode=TwoWay}"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Center"/>
+
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal"
+                            Margin="10 0">
+                <TextBlock 
+                        Text="Yellow Filter" 
+                        VerticalAlignment="Center" 
+                        Margin="5,0,0,0"
+                        FontSize="10"/>
+
+                <CheckBox 
+            IsChecked="{Binding YellowFilter, UpdateSourceTrigger=PropertyChanged , Mode=TwoWay}"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Center"/>
+
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal"
+                            Margin="10 0">
+
+                <TextBlock Text="Purple Filter" 
+                           VerticalAlignment="Center" 
+                           Margin="5,0,0,0"
+                           FontSize="10"/>
+
+                <CheckBox 
+            IsChecked="{Binding PurpleFilter, UpdateSourceTrigger=PropertyChanged , Mode=TwoWay}"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Center"/>
+        
+
+            </StackPanel>
+
+        </StackPanel>
+        
+        <Grid
+             Visibility="{Binding IsNotLoading, Converter={StaticResource BooleanToVisibilityConverter}}"
+            Grid.Row="2">
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+            </Grid.RowDefinitions>
+
+            <TextBlock Grid.Row="0"
+                       Margin="15"
+                       FontWeight="Bold"
+                       Foreground="White"
+                       VerticalAlignment="Center"
+                       >Favourites</TextBlock>
+            
+            <!--data grid-->
+        <DataGrid ItemsSource="{Binding StarredEntities}" 
+                  IsReadOnly="True" 
+                  AutoGenerateColumns="false"
+                  Background="Transparent"
+                  ColumnWidth="*"
+                  Margin="5"
+                  Grid.Row="1"
+                  >
+            <DataGrid.Columns>
+                <DataGridTemplateColumn 
+                    Header="Title"
+                    MinWidth="150">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <ScrollViewer
+                                    HorizontalScrollBarVisibility="Visible"
+                                VerticalScrollBarVisibility="Disabled"
+                                Style="{StaticResource FavsScrollViewer}">
+                                <Grid>
+                                    <TextBlock Text="{Binding PaperEntity.Title}"></TextBlock>
+                                </Grid>
+                            </ScrollViewer>
+
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <DataGridTemplateColumn 
+                    Header="Year"
+                    MinWidth="150">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <ScrollViewer
+                         HorizontalScrollBarVisibility="Visible"
+                     VerticalScrollBarVisibility="Disabled"
+                     Style="{StaticResource FavsScrollViewer}">
+                                <Grid>
+                                    <TextBlock Text="{Binding PaperEntity.Year}"></TextBlock>
+                                </Grid>
+                            </ScrollViewer>
+
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <DataGridTemplateColumn 
+                    Header="FullTextLink"
+                    MinWidth="150">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <ScrollViewer
+                         HorizontalScrollBarVisibility="Visible"
+                     VerticalScrollBarVisibility="Disabled"
+                     Style="{StaticResource FavsScrollViewer}">
+                                <Grid>
+                                    <TextBlock Text="{Binding PaperEntity.FullTextLink}"></TextBlock>
+                                </Grid>
+                            </ScrollViewer>
+
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <DataGridTemplateColumn 
+                    Header="Publisher"
+                    MinWidth="150">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <ScrollViewer
+                                    HorizontalScrollBarVisibility="Visible"
+                                VerticalScrollBarVisibility="Disabled"
+                                Style="{StaticResource FavsScrollViewer}">
+                                <Grid>
+                                    <TextBlock Text="{Binding PaperEntity.Publisher}"></TextBlock>
+                                </Grid>
+                            </ScrollViewer>
+                 
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <DataGridTemplateColumn 
+                        MinWidth="10"
+                        MaxWidth="30">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <Ellipse Width="20" 
+                                             Height="20" 
+                                             Fill="{Binding ColorFilter, Converter={StaticResource ColorFilterToBrushConverter}}"
+                                             />
+                                </Grid>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                <DataGridTemplateColumn 
+                    MinWidth="10"
+                    MaxWidth="30">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                                <Grid>
+                                    <Button 
+                                        Style="{StaticResource TransparentButton}"
+                                        Command="{Binding DataContext.DeleteCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                        CommandParameter="{Binding Id}">
+                                    <Button.Content>
+                                        <StackPanel>
+                                            <fa:ImageAwesome Icon="Trash" 
+                                                             VerticalAlignment="Center" 
+                                                             HorizontalAlignment="Center" 
+                                                             Width="10"
+                                                             Height="10"/>
+                                        </StackPanel>
+                                    </Button.Content>
+                                </Button>
+                                </Grid>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+            </DataGrid.Columns>
+ 
+            <!--color selection pop up-->
+                <DataGrid.RowStyle>
+                    <Style TargetType="DataGridRow">
+                        <Setter Property="ContextMenu">
+                            <Setter.Value>
+                                <ContextMenu>
+                                    <StackPanel Orientation="Vertical">
+                                        <TextBlock
+                                            FontWeight="Bold"
+                                            Margin="0 5"
+                                            Foreground="Black">Select Color</TextBlock>
+
+                                        <StackPanel Orientation="Horizontal">
+                                            <Button Style="{StaticResource MenuButtonStyle}" 
+            Cursor="Hand"
+            Command="{Binding Source={StaticResource Proxy}, Path=Data.ChangeColorFilterCommand}">
+                                                <Button.CommandParameter>
+                                                    <MultiBinding Converter="{StaticResource MultiParameterConverter}">
+                                                        <Binding Path="Id"/>
+                                                        <Binding Mode="OneTime">
+                                                            <Binding.Source>Gray</Binding.Source>
+                                                        </Binding>
+                                                    </MultiBinding>
+                                                </Button.CommandParameter>
+                                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                                    <Ellipse Width="20" 
+                     Height="20" 
+                     Fill="{StaticResource ModernGrayBrush}"
+                     Margin="10 0"
+                     Cursor="Hand"/>
+                                                </StackPanel>
+                                            </Button>
+
+                                            <Button Style="{StaticResource MenuButtonStyle}" 
+            Cursor="Hand"
+            Command="{Binding Source={StaticResource Proxy}, Path=Data.ChangeColorFilterCommand}">
+                                                <Button.CommandParameter>
+                                                    <MultiBinding Converter="{StaticResource MultiParameterConverter}">
+                                                        <Binding Path="Id"/>
+                                                        <Binding Mode="OneTime">
+                                                            <Binding.Source>Red</Binding.Source>
+                                                        </Binding>
+                                                    </MultiBinding>
+                                                </Button.CommandParameter>
+                                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                                    <Ellipse Width="20" 
+                     Height="20" 
+                     Fill="{StaticResource ModernRedBrush}"
+                     Margin="10 0"
+                     Cursor="Hand"/>
+                                                </StackPanel>
+                                            </Button>
+
+                                            <Button Style="{StaticResource MenuButtonStyle}" 
+            Cursor="Hand"
+            Command="{Binding Source={StaticResource Proxy}, Path=Data.ChangeColorFilterCommand}">
+                                                <Button.CommandParameter>
+                                                    <MultiBinding Converter="{StaticResource MultiParameterConverter}">
+                                                        <Binding Path="Id"/>
+                                                        <Binding Mode="OneTime">
+                                                            <Binding.Source>Blue</Binding.Source>
+                                                        </Binding>
+                                                    </MultiBinding>
+                                                </Button.CommandParameter>
+                                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                                    <Ellipse Width="20" 
+                     Height="20" 
+                     Fill="{StaticResource ModernBlueBrush}"
+                     Margin="10 0"
+                     Cursor="Hand"/>
+                                                </StackPanel>
+                                            </Button>
+
+                                            <Button Style="{StaticResource MenuButtonStyle}" 
+            Cursor="Hand"
+            Command="{Binding Source={StaticResource Proxy}, Path=Data.ChangeColorFilterCommand}">
+                                                <Button.CommandParameter>
+                                                    <MultiBinding Converter="{StaticResource MultiParameterConverter}">
+                                                        <Binding Path="Id"/>
+                                                        <Binding Mode="OneTime">
+                                                            <Binding.Source>Purple</Binding.Source>
+                                                        </Binding>
+                                                    </MultiBinding>
+                                                </Button.CommandParameter>
+                                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                                    <Ellipse Width="20" 
+                     Height="20" 
+                     Fill="{StaticResource ModernPurpleBrush}"
+                     Margin="10 0"
+                     Cursor="Hand"/>
+                                                </StackPanel>
+                                            </Button>
+
+                                            <Button Style="{StaticResource MenuButtonStyle}" 
+            Cursor="Hand"
+            Command="{Binding Source={StaticResource Proxy}, Path=Data.ChangeColorFilterCommand}">
+                                                <Button.CommandParameter>
+                                                    <MultiBinding Converter="{StaticResource MultiParameterConverter}">
+                                                        <Binding Path="Id"/>
+                                                        <Binding Mode="OneTime">
+                                                            <Binding.Source>Green</Binding.Source>
+                                                        </Binding>
+                                                    </MultiBinding>
+                                                </Button.CommandParameter>
+                                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                                    <Ellipse Width="20" 
+                     Height="20" 
+                     Fill="{StaticResource ModernGreenBrush}"
+                     Margin="10 0"
+                     Cursor="Hand"/>
+                                                </StackPanel>
+                                            </Button>
+
+                                            <Button Style="{StaticResource MenuButtonStyle}" 
+Cursor="Hand"
+Command="{Binding Source={StaticResource Proxy}, Path=Data.ChangeColorFilterCommand}">
+                                                <Button.CommandParameter>
+                                                    <MultiBinding Converter="{StaticResource MultiParameterConverter}">
+                                                        <Binding Path="Id"/>
+                                                        <Binding Mode="OneTime">
+                                                            <Binding.Source>Yellow</Binding.Source>
+                                                        </Binding>
+                                                    </MultiBinding>
+                                                </Button.CommandParameter>
+                                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                                    <Ellipse Width="20" 
+         Height="20" 
+         Fill="{StaticResource ModernYellowBrush}"
+         Margin="10 0"
+         Cursor="Hand"/>
+                                                </StackPanel>
+                                            </Button>
+
+                                        </StackPanel>
+
+
+                                    </StackPanel>
+                                </ContextMenu>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </DataGrid.RowStyle>
+
+
+
+                <!--disable selection--> 
+            <DataGrid.Resources>
+                <ResourceDictionary>
+                    <Style x:Key="{x:Type DataGridCell}" TargetType="{x:Type DataGridCell}">
+                        <Setter Property="Background" Value="White" />
+                        <Setter Property="BorderBrush" Value="White" />
+                        <Setter Property="Foreground" Value="Black" />
+                        <Setter Property="Cursor" Value="Hand"></Setter>
+                        <Style.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter Property="Background" Value="White" />
+                                <Setter Property="BorderBrush" Value="White" />
+                                <Setter Property="Foreground" Value="Black" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                    <Style TargetType="{x:Type DataGridRow}">
+                            <Setter Property="Background" Value="White" />
+                            <Setter Property="BorderBrush" Value="White" />
+                            <Setter Property="Foreground" Value="Black" />
+                            <Setter Property="Cursor" Value="Hand"></Setter>
+                            <Style.Triggers>
+                                <Trigger Property="IsSelected" Value="True">
+                                    <Setter Property="Background" Value="White" />
+                                    <Setter Property="BorderBrush" Value="White" />
+                                    <Setter Property="Foreground" Value="Black" />
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ResourceDictionary>
+            </DataGrid.Resources>
+            
+        </DataGrid>
+            
+        </Grid>
+
+        <StackPanel Grid.Row="3"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Right"
+                    Margin="10">
+            <TextBlock
+                Margin="20 0"
+                VerticalAlignment="Center"
+                FontWeight="Bold">Export favourites as pdf</TextBlock>
+            <Button 
+                Style="{StaticResource ModernButton2}"
+                Height="30"
+                Width="100"
+                Margin="20 0"
+                Command="{Binding ExportFavouritesAsPdfDCommand}">
+                Export
+            </Button>
+        </StackPanel>
     </Grid>
+        
 </UserControl>

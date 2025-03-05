@@ -60,7 +60,12 @@ namespace DocStack.ViewModels
                 (_) => CurrentViewModel != _homeViewModel);
             NavigateSearchPanel = new RelayCommand<string>((_) => CurrentViewModel = _searchViewModel, 
                 (_) => CurrentViewModel != _searchViewModel);
-            NavigateFavouritesPanel = new RelayCommand<string>((_) => CurrentViewModel = _favouritesViewModel,
+            NavigateFavouritesPanel = new RelayCommand<string>(async (_) =>
+            {
+                CurrentViewModel = _favouritesViewModel;
+                await _favouritesViewModel.Fetch();
+                _favouritesViewModel.ResetFilters();
+            },
                 (_) => CurrentViewModel != _favouritesViewModel);
             NavigateMyPapersPanel = new RelayCommand<string>((_) => CurrentViewModel = _myPapersViewModel,
                 (_) => CurrentViewModel != _myPapersViewModel);
@@ -70,7 +75,7 @@ namespace DocStack.ViewModels
                 (_) => CurrentViewModel != _documentsViewModel);
 
 
-            _currentViewModel = _documentsViewModel;
+            _currentViewModel = _myPapersViewModel;
         }
         
 

@@ -281,6 +281,9 @@ namespace DocStack.ViewModels
         {
 
             PaperEntity paper = this.SelectedPaperEntity;
+            
+            paper.Id = Guid.Empty; // refresh
+
             var response = await _paperService.AddPaperAsync(paper);
 
             if(response.Ok)
