@@ -4,8 +4,14 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:DocStack.Views"
+             xmlns:models="clr-namespace:Models.Entity;assembly=Models"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="450" d:DesignWidth="800"
+             xmlns:converters="clr-namespace:DocStack.Converters"
+             xmlns:components="clr-namespace:DocStack.Components"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+              xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.WPF;assembly=LiveChartsCore.SkiaSharpView.WPF">
+    
     <UserControl.Resources>
         <Style  TargetType="TextBlock">
             <Setter Property="Foreground"
@@ -13,8 +19,249 @@
             <Setter Property="FontSize"
             Value="16"/>
         </Style>
+
+        <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     </UserControl.Resources>
-    <Grid Background="{StaticResource MatteBlackBrush}">
-        <TextBlock>Home View</TextBlock>
+
+    <Grid  Background="{StaticResource MatteBlackBrush}">
+        <Grid
+            Visibility="{Binding IsNotLoading , Converter={StaticResource BooleanToVisibilityConverter}}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="5" />
+                <ColumnDefinition Width="Auto" MinWidth="200" />
+            </Grid.ColumnDefinitions>
+
+            <!-- Main Content -->
+            <Grid Grid.Column="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"></RowDefinition>
+                    <RowDefinition Height="*"></RowDefinition>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+
+
+                <Grid Grid.Row="0" 
+                      Grid.Column="0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="20"></RowDefinition>
+                        <RowDefinition Height="*" MaxHeight="300"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0">Calendar</TextBlock>
+                    <Viewbox Stretch="Uniform"
+                             Grid.Row="1">
+                        <ItemsControl ItemsSource="{Binding Day}" 
+                                  HorizontalAlignment="Stretch"
+                                  VerticalAlignment="Stretch">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <UniformGrid Rows="{Binding CalendarRowCount}" 
+                          Columns="{Binding CalendarColCount}" 
+                          FirstColumn="{Binding FirstCol}"/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Button  Background="White">
+                                        <StackPanel Orientation="Vertical">
+                                            <Grid>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="*"></RowDefinition>
+                                                    <RowDefinition Height="3*"></RowDefinition>
+                                                </Grid.RowDefinitions>
+                                            </Grid>
+                                            <TextBlock Text="{Binding Day}" 
+                                                       Grid.Row="0"
+                                                       FontSize="4"
+                                                       FontWeight="Light">
+                                            </TextBlock>
+                                            <Ellipse
+                                                Visibility="{Binding IsCurrentDate, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                                Grid.Row="1"
+                                                Width="10"
+                                                Height="10"
+                                                Fill="Orange"
+                                                >
+                                            </Ellipse>
+                                        
+                                        </StackPanel>
+                                    </Button> 
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </Viewbox>
+                </Grid>
+
+
+                <!--chart--> 
+                <lvc:CartesianChart x:Name="MyBarChart"
+                                    Grid.Row="1"
+                                    Grid.Column="0"
+                            Series="{Binding BarSeries}" 
+                            XAxes="{Binding XAxis}" 
+                            YAxes="{Binding YAxis}" />
+
+                <!--recent added docs-->
+
+                <ListView ItemsSource="{Binding RecentAddedDocuments}"
+          Grid.Column="1"
+                          Grid.Row="1"
+          Background="Transparent"
+          ScrollViewer.VerticalScrollBarVisibility="Auto"
+          VerticalAlignment="Stretch"
+          HorizontalAlignment="Stretch"
+          HorizontalContentAlignment="Stretch"
+          SelectedItem="{Binding SelectedDocument, Mode=TwoWay}">
+
+                    <ListView.ItemTemplate>
+                        <DataTemplate DataType="{x:Type models:MyDocuments}">
+                            <Grid Margin="20">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+
+                                <!-- Title -->
+                                <TextBlock Grid.Row="0"
+                           Margin="0,0,0,8"
+                           FontSize="16"
+                           FontWeight="SemiBold"
+                           Foreground="#f8f8f8"
+                           Text="{Binding Title}"
+                           TextWrapping="Wrap" />
+
+                                <!-- Publisher, Year, and Authors -->
+                                <StackPanel Grid.Row="1"
+                            Margin="0,0,0,8"
+                            Orientation="Horizontal">
+                                    <TextBlock FontSize="14"
+                               Foreground="#B8B8B8"
+                               Text="{Binding Publisher}"
+                               TextWrapping="Wrap" />
+                                    <TextBlock Margin="8,0"
+                               FontSize="14"
+                               Foreground="#B8B8B8"
+                               Text=" • " />
+                                    <TextBlock FontSize="14"
+                               Foreground="#B8B8B8"
+                               Text="{Binding Year}"
+                               TextWrapping="Wrap" />
+                                    <TextBlock Margin="8,0"
+                               FontSize="14"
+                               Foreground="#B8B8B8"
+                               Text=" • " />
+                                    <TextBlock FontSize="14"
+                               Foreground="#B8B8B8"
+                               Text="{Binding Authors}"
+                               TextWrapping="Wrap" />
+                                </StackPanel>
+
+                            </Grid>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+
+                    <ListView.Resources>
+                        <Style TargetType="{x:Type ScrollBar}" BasedOn="{StaticResource ModernScrollBar}"/>
+                    </ListView.Resources>
+
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem">
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                        </Style>
+                    </ListView.ItemContainerStyle>
+
+                </ListView>
+
+            </Grid>
+
+            <GridSplitter Grid.Column="1"
+              Width="5"
+              Background="Gray"
+              HorizontalAlignment="Stretch"
+              VerticalAlignment="Stretch"
+              ResizeBehavior="PreviousAndNext"
+              ShowsPreview="True" />
+
+
+            <ListBox ItemsSource="{Binding ReccomendedePapers}"
+     Grid.Column="2"
+     Background="Transparent"
+     ScrollViewer.VerticalScrollBarVisibility="Auto"
+     VerticalAlignment="Stretch"
+     HorizontalAlignment="Stretch"
+     HorizontalContentAlignment="Stretch"
+     SelectedItem="{Binding SelectedPaper,Mode=TwoWay}">
+
+                <ListBox.ItemTemplate>
+                    <DataTemplate DataType="entity:PaperEntity">
+                        <Grid Margin="20">
+
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+
+                            <TextBlock
+                    Grid.Row="0"
+                    Margin="0,0,0,8"
+                    FontSize="16"
+                    FontWeight="SemiBold"
+                    Foreground="#f8f8f8"
+                    Text="{Binding title}"
+                    TextWrapping="Wrap" />
+
+                            <StackPanel
+                    Grid.Row="1"
+                    Margin="0,0,0,8"
+                    Orientation="Horizontal">
+                                <TextBlock
+                        FontSize="14"
+                        Foreground="#B8B8B8"
+                        Text="{Binding publisher}"
+                        TextWrapping="Wrap" />
+                                <TextBlock
+                        Margin="8,0"
+                        FontSize="14"
+                        Foreground="#B8B8B8"
+                        Text=" • " />
+                                <TextBlock
+                        FontSize="14"
+                        Foreground="#B8B8B8"
+                        Text="{Binding authors}"
+                        TextWrapping="Wrap" />
+                            </StackPanel>
+
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+
+                <ListBox.Resources>
+                    <Style TargetType="{x:Type ScrollBar}" BasedOn="{StaticResource ModernScrollBar}"/>
+                </ListBox.Resources>
+
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="ListBoxItem">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                    </Style>
+                </ListBox.ItemContainerStyle>
+
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="SelectionChanged">
+                        <i:InvokeCommandAction Command="{Binding OpenInBrowserCommand}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+
+            </ListBox>
+        </Grid>
+
+        <components:Spinner Visibility="{Binding IsLoading , Converter={StaticResource BooleanToVisibilityConverter}}" />
     </Grid>
+
+    
+    
 </UserControl>

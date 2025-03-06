@@ -1,6 +1,7 @@
 ﻿using Models;
 using Models.ApiResponse;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,11 +16,15 @@ namespace Service
     public class NetworkService
     {
         private HttpClient _httpClient;
+
+        private HttpClient _httpClientWithNoBaseAdress;
+        
         private SemaphoreSlim _semaphoreSlim;
         public NetworkService()
         {
             string Secret = Environment.GetEnvironmentVariable("CoreApiToken")!;
             _httpClient = new();
+            _httpClientWithNoBaseAdress = new();
             _httpClient.DefaultRequestHeaders.Authorization =
                 new AuthenticationHeaderValue("Bearer", Secret);
             _httpClient.BaseAddress = new Uri("https://api.core.ac.uk/v3/");
@@ -193,5 +198,23 @@ namespace Service
             }
         }
 
+        public async Task<int> GetCitationCountAsync(string doi)
+        {
+            if (string.IsNullOrEmpty(doi))
+                return 0;
+
+            string apiUrl = $"https://api.semanticscholar.org/graph/v1/paper/{doi}?fields=citationCount";
+
+            try
+            {
+                var response = await _httpClientWithNoBaseAdress.GetStringAsync(apiUrl);
+                var json = JObject.Parse(response);
+                return json["citationCount"]?.Value<int>() ?? 0;
+            }
+            catch (Exception)
+            {
+                return 0; // Handle errors gracefully
+            }
+        }
     }
 }
