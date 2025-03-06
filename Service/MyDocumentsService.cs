@@ -100,6 +100,83 @@ namespace Service
                 _appDbContext._semaphore.Release();
             }
         }
-    }
 
+        public async Task<ServiceResponse<List<MyDocuments>>> GetWithPaginationAsync(int offset, int limit)
+        {
+            try
+            {
+                await _appDbContext._semaphore.WaitAsync();
+
+                List<MyDocuments> myDocumentsFromDb = await _appDbContext.MyDocuments
+                    .Skip(offset)
+                    .Take(limit)
+                    .ToListAsync();
+
+                return ServiceResponse<List<MyDocuments>>.Success(myDocumentsFromDb);
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine(ex.Message);
+                return ServiceResponse<List<MyDocuments>>.Fail("An error occurred while fetching documents.", ex);
+            }
+            finally
+            {
+                _appDbContext._semaphore.Release();
+            }
+        }
+
+        public async Task<ServiceResponse<MyDocuments>>  GetFileAsync(Guid documentId)
+        {
+            try
+            {
+                await _appDbContext._semaphore.WaitAsync();
+                MyDocuments? documentFromDb = await _appDbContext.MyDocuments.FirstOrDefaultAsync(x => x.Id == documentId);
+
+                if (documentFromDb == null)
+                {
+                    return ServiceResponse<MyDocuments>.Fail($"Document with id {documentId} not exist");
+                }
+
+                return ServiceResponse<MyDocuments>.Success(documentFromDb);
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine(ex.Message);
+                return ServiceResponse<MyDocuments>.Fail("An error occurred while deleting documents.", ex);
+            }
+            finally
+            {
+                _appDbContext._semaphore.Release();
+            }
+        }
+
+        public async Task<ServiceResponse<MyDocuments>> ChangeFileAsync(Guid documentId, byte[] blob)
+        {
+            try
+            {
+                await _appDbContext._semaphore.WaitAsync();
+                MyDocuments? documentFromDb = await _appDbContext.MyDocuments.FirstOrDefaultAsync(x => x.Id == documentId);
+
+                if (documentFromDb == null)
+                {
+                    return ServiceResponse<MyDocuments>.Fail($"Document with id {documentId} not exist");
+                }
+
+                documentFromDb.FileData = blob;
+                await _appDbContext.SaveChangesAsync();    
+
+                return ServiceResponse<MyDocuments>.Success(documentFromDb);
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine(ex.Message);
+                return ServiceResponse<MyDocuments>.Fail("An error occurred while deleting documents.", ex);
+            }
+            finally
+            {
+                _appDbContext._semaphore.Release();
+            }
+        }
+
+    }
 }

@@ -6,7 +6,9 @@
              xmlns:local="clr-namespace:DocStack.Views"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
-             xmlns:converters="clr-namespace:DocStack.Converters">
+             xmlns:converters="clr-namespace:DocStack.Converters"
+             xmlns:syncfusion="clr-namespace:Syncfusion.Windows.PdfViewer;assembly=Syncfusion.PdfViewer.WPF">
+    
     <UserControl.Resources>
         <Style  TargetType="TextBlock">
             <Setter Property="Foreground"
@@ -16,125 +18,198 @@
         </Style>
 
         <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
-
+    
     </UserControl.Resources>
     <Grid Background="{StaticResource MatteBlackBrush}">
-        <Grid Visibility="{Binding IsNotLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
+        <Grid Visibility="{Binding NotEditorMode, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <Grid Visibility="{Binding IsNotLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"></RowDefinition>
+                    <RowDefinition Height="50"></RowDefinition>
+                    <RowDefinition Height="50"></RowDefinition>
+                </Grid.RowDefinitions>
+
+                <ListBox ItemsSource="{Binding MyDocuments}"
+     Grid.Row="0"
+     Background="Transparent"
+     ScrollViewer.VerticalScrollBarVisibility="Auto"
+     VerticalAlignment="Stretch"
+     HorizontalAlignment="Stretch"
+     Width="Auto"
+     HorizontalContentAlignment="Stretch">
+
+                    <ListBox.ItemTemplate>
+                        <DataTemplate DataType="entity:PaperEntity">
+                            <Grid Margin="20" 
+                          Width="Auto">
+
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+
+                                <TextBlock
+                    Grid.Row="0"
+                    Margin="0,0,0,8"
+                    FontSize="16"
+                    FontWeight="SemiBold"
+                    Foreground="#f8f8f8"
+                    Text="{Binding Title}"
+                    TextWrapping="Wrap" />
+
+                                <WrapPanel
+Grid.Row="1"
+Margin="0,0,0,8"
+Orientation="Horizontal">
+                                    <TextBlock
+    FontSize="14"
+    Foreground="#B8B8B8"
+    Text="{Binding Publisher}"
+    TextWrapping="Wrap"
+    TextTrimming="CharacterEllipsis" />
+                                    <TextBlock
+    Margin="8,0"
+    FontSize="14"
+    Foreground="#B8B8B8"
+    Text=" • " />
+                                    <TextBlock
+    FontSize="14"
+    Foreground="#B8B8B8"
+    Text="{Binding Authors}"
+    TextWrapping="Wrap"
+    TextTrimming="CharacterEllipsis" />
+                                </WrapPanel>
+
+
+                                <Button Style="{StaticResource ModernButton3}"
+                                Grid.Row="3"
+                                Margin="10"
+                                Height="30"
+                                Width="200"
+                                FontWeight="Bold"
+                                 Command="{Binding DataContext.DeleteDocumentCommand, 
+                            RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                CommandParameter="{Binding Id}">Delete</Button>
+
+                                <Button Style="{StaticResource ModernButton2}"
+    Grid.Row="4"
+    Margin="10"
+    Height="30"
+    Width="200"
+    FontWeight="Bold"
+     Command="{Binding DataContext.OpenInPdfEditorCommand, 
+RelativeSource={RelativeSource AncestorType=UserControl}}"
+    CommandParameter="{Binding Id}">OpenInEditor</Button>
+
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+
+                    <ListBox.Resources>
+                        <Style TargetType="{x:Type ScrollBar}" BasedOn="{StaticResource ModernScrollBar}"/>
+                    </ListBox.Resources>
+
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="ListBoxItem">
+                            <!-- Ensure the item stretches properly -->
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+
+                            <!-- Remove Selection and Click Effects -->
+                            <Setter Property="Background" Value="Transparent"/>
+                            <Setter Property="BorderThickness" Value="0"/>
+                            <Setter Property="Padding" Value="5"/>
+
+                            <Style.Triggers>
+                                <!-- Prevent Background Change on Selection -->
+                                <Trigger Property="IsSelected" Value="True">
+                                    <Setter Property="Background" Value="Transparent"/>
+                                    <Setter Property="Foreground" Value="White"/>
+                                    <!-- Keeps text color unchanged -->
+                                    <Setter Property="BorderBrush" Value="Transparent"/>
+                                </Trigger>
+
+                                <!-- Remove Hover Effect -->
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="Transparent"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ListBox.ItemContainerStyle>
+
+
+                </ListBox>
+
+                <Button Grid.Row="1"
+                Style="{StaticResource ModernButton2}"
+                Width="200"
+                Height="30"
+                Foreground="White"
+                FontWeight="Bold"
+                FontSize="20"
+                Cursor="Hand"
+                Command="{Binding ImportDocumentsCommand}">
+                    Import Document
+                </Button>
+
+                <Button Grid.Row="2"
+           Style="{StaticResource ModernButton2}"
+           Width="200"
+           Height="30"
+           Foreground="White"
+           FontWeight="Bold"
+           FontSize="20"
+           Cursor="Hand"
+           Command="{Binding ExportDocumentsAsPdfCommand}">
+                    Export
+                </Button>
+
+            </Grid>
+        </Grid>
+        
+        <Grid Visibility="{Binding EditorMode, Converter={StaticResource BooleanToVisibilityConverter}}">
             <Grid.RowDefinitions>
-                <RowDefinition Height="*"></RowDefinition>
-                <RowDefinition Height="50"></RowDefinition>
+                <RowDefinition  Height="Auto"></RowDefinition>
+                <RowDefinition  Height="*"></RowDefinition>
+                <RowDefinition  Height="Auto"></RowDefinition>
+                <RowDefinition  Height="Auto"></RowDefinition>
             </Grid.RowDefinitions>
-
-            <ListBox ItemsSource="{Binding MyDocuments}"
-         Grid.Row="0"
-         Background="Transparent"
-         ScrollViewer.VerticalScrollBarVisibility="Auto"
-         VerticalAlignment="Stretch"
-         HorizontalAlignment="Stretch"
-         Width="Auto"
-         HorizontalContentAlignment="Stretch">
-
-                <ListBox.ItemTemplate>
-                    <DataTemplate DataType="entity:PaperEntity">
-                        <Grid Margin="20">
-
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
-
-                            <TextBlock
-                        Grid.Row="0"
-                        Margin="0,0,0,8"
-                        FontSize="16"
-                        FontWeight="SemiBold"
-                        Foreground="#f8f8f8"
-                        Text="{Binding Title}"
-                        TextWrapping="Wrap" />
-
-                            <StackPanel
-                        Grid.Row="1"
-                        Margin="0,0,0,8"
-                        Orientation="Horizontal">
-                                <TextBlock
-                            FontSize="14"
-                            Foreground="#B8B8B8"
-                            Text="{Binding Publisher}"
-                            TextWrapping="Wrap" />
-                                <TextBlock
-                            Margin="8,0"
-                            FontSize="14"
-                            Foreground="#B8B8B8"
-                            Text=" • " />
-                                <TextBlock
-                            FontSize="14"
-                            Foreground="#B8B8B8"
-                            Text="{Binding Authors}"
-                            TextWrapping="Wrap" />
-                            </StackPanel>
-
-                            <Button Style="{StaticResource ModernButton3}"
-                                    Grid.Row="3"
-                                    Margin="10"
-                                    Height="30"
-                                    Width="200"
-                                    FontWeight="Bold"
-                                     Command="{Binding DataContext.DeleteDocumentCommand, 
-                                RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                    CommandParameter="{Binding Id}">Delete</Button>
-                            
-                        </Grid>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-
-                <ListBox.Resources>
-                    <Style TargetType="{x:Type ScrollBar}" BasedOn="{StaticResource ModernScrollBar}"/>
-                </ListBox.Resources>
-
-                <ListBox.ItemContainerStyle>
-                    <Style TargetType="ListBoxItem">
-                        <!-- Ensure the item stretches properly -->
-                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-
-                        <!-- Remove Selection and Click Effects -->
-                        <Setter Property="Background" Value="Transparent"/>
-                        <Setter Property="BorderThickness" Value="0"/>
-                        <Setter Property="Padding" Value="5"/>
-
-                        <Style.Triggers>
-                            <!-- Prevent Background Change on Selection -->
-                            <Trigger Property="IsSelected" Value="True">
-                                <Setter Property="Background" Value="Transparent"/>
-                                <Setter Property="Foreground" Value="White"/>
-                                <!-- Keeps text color unchanged -->
-                                <Setter Property="BorderBrush" Value="Transparent"/>
-                            </Trigger>
-
-                            <!-- Remove Hover Effect -->
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" Value="Transparent"/>
-                            </Trigger>
-                        </Style.Triggers>
-                    </Style>
-                </ListBox.ItemContainerStyle>
-
-
-            </ListBox>
-
-            <Button Grid.Row="1"
+                <Button 
                     Style="{StaticResource ModernButton2}"
-                    Width="200"
+                    Width="100"
                     Height="30"
-                    Foreground="White"
-                    FontWeight="Bold"
-                    FontSize="20"
+                    HorizontalAlignment="Left"
+                    Margin="20"
                     Cursor="Hand"
-                    Command="{Binding ImportDocumentsCommand}">
-                Import Document
+                    FontWeight="Bold"
+                    Command="{Binding GoBackCommand}">
+                    Go Back
+                </Button>
+
+            <syncfusion:PdfViewerControl 
+                x:Name="pdfViewerControl" 
+                Grid.Row="1"
+                Margin="20"/>
+
+            <Button Height="35"
+                    Grid.Row="2"
+                    Width="130"
+                    Margin="10 0"
+                    Style="{StaticResource ModernButton2}"
+                    Command="{Binding SaveEditedFileCommand}">
+                Save Edited File
+            </Button>
+            <Button Height="35"
+                    Grid.Row="3"
+                    Width="130"
+                    Style="{StaticResource ModernButton2}"
+                    Command="{Binding OverwriteEditedFileCommand}">
+                Overwrite File
             </Button>
             
         </Grid>
+
     </Grid>
 </UserControl>

@@ -75,7 +75,7 @@ namespace DocStack.ViewModels
                 (_) => CurrentViewModel != _documentsViewModel);
 
 
-            _currentViewModel = _myPapersViewModel;
+            _currentViewModel = _homeViewModel;
         }
         
 
